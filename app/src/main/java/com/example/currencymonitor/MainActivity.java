@@ -1,7 +1,10 @@
 package com.example.currencymonitor;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.os.Bundle;
@@ -12,27 +15,30 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import com.example.currencymonitor.data.MetaCurr;
+import com.example.currencymonitor.data.db.CurrencyDBHelper;
+
+import static android.provider.BaseColumns._ID;
+//import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_DATE;
+import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_DATE;
+import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_JSON;
+import static com.example.currencymonitor.data.db.CurrencyContract.Entry.CURRENCY;
+import static com.example.currencymonitor.data.db.CurrencyContract.Entry.TABLE_NAME;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String TAG = "abc";
+    private final static String TAG = /*MainActivity.class.getSimpleName()*/"abc";
+    private SQLiteDatabase mDb;
+    CurrencyDBHelper dbHelper;
 
-    String s;
-    TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textView = findViewById(R.id.tv);
-        f();
+        extraction("USD");
     }
 
     @Override
@@ -65,17 +71,23 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    void f() {
-        App.getApi().getData("USD").enqueue(new Callback<MetaCurr>() {
+    void extraction(String query) {
+        App.getApi().getData(query).enqueue(new Callback<MetaCurr>() {
             @Override
             public void onResponse(Call<MetaCurr> call, Response<MetaCurr> response) {
                 if (response.isSuccessful() || response.body() != null) {
-                    Toast.makeText(MainActivity.this, "woo", Toast.LENGTH_SHORT).show();
-                    s = response.body().getBase();
-                    Log.i(TAG, s);
+                    dbHelper = new CurrencyDBHelper(MainActivity.this);
+                    mDb = dbHelper.getReadableDatabase();
+                    ContentValues cv = new ContentValues();
+                    cv.put(CURRENCY, "bla");
+                    cv.put(COLUMN_JSON, response.body().getBase());
+                    long f = mDb.insert(TABLE_NAME, null, cv);
+                    Toast.makeText(MainActivity.this, "sucess", Toast.LENGTH_SHORT).show();
+                    Log.i(TAG, getS());
+
                 } else {
                     try {
-                        Log.d("TAG", response.body().getBase().toString());
+                        Log.d(TAG, response.body().getBase().toString());
                         Toast.makeText(MainActivity.this, ":(", Toast.LENGTH_SHORT).show();
                     } catch (NullPointerException e) {
                         e.printStackTrace();
@@ -89,5 +101,24 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 Toast.makeText(MainActivity.this, "An error occurred during networking", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public String getS() {
+        String s = null;
+        Cursor cursor = mDb.query(TABLE_NAME, null,null, null, null, null, null);
+        boolean abc = cursor.moveToFirst(); // <-- First call
+        s = cursor.getString(cursor.getColumnIndex(CURRENCY));
+        /*
+        if (cursor != null)
+        {
+            if(cursor.moveToFirst())
+            {
+                s = (cursor.getString(1));
+            }
+        }
+        */mDb.close();
+        // return user
+        return s;
+
     }
 }
