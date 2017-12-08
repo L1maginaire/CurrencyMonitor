@@ -5,16 +5,34 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import com.example.currencymonitor.data.MetaCurr;
+
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+    private static final String TAG = "abc";
+
+    String s;
+    TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        textView = findViewById(R.id.tv);
+        f();
     }
 
     @Override
@@ -45,5 +63,31 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         super.onDestroy();
         PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    void f() {
+        App.getApi().getData("USD").enqueue(new Callback<MetaCurr>() {
+            @Override
+            public void onResponse(Call<MetaCurr> call, Response<MetaCurr> response) {
+                if (response.isSuccessful() || response.body() != null) {
+                    Toast.makeText(MainActivity.this, "woo", Toast.LENGTH_SHORT).show();
+                    s = response.body().getBase();
+                    Log.i(TAG, s);
+                } else {
+                    try {
+                        Log.d("TAG", response.body().getBase().toString());
+                        Toast.makeText(MainActivity.this, ":(", Toast.LENGTH_SHORT).show();
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MetaCurr> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(MainActivity.this, "An error occurred during networking", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
