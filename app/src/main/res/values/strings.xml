@@ -1,4 +1,20 @@
 <resources>
     <string name="app_name">CurrencyMonitor</string>
     <string name="settings">Settings</string>
+    <string name="pref_eur">EUR</string>
+    <string name="pref_show_eur" translatable="false">show_eur</string>
+    <string name="pref_usd">USD</string>
+    <string name="pref_show_usd" translatable="false">show_usd</string>
+    <string name="pref_jpy">JPY</string>
+    <string name="pref_show_jpy" translatable="false">show_jpy</string>
+    <string name="pref_gbp">GBP</string>
+    <string name="pref_show_gbp" translatable="false">show_gbp</string>
+    <string name="pref_chf">CHF</string>
+    <string name="pref_show_chf" translatable="false">show_chf</string>
+    <string name="pref_aud">AUD</string>
+    <string name="pref_show_aud" translatable="false">show_aud</string>
+    <string name="pref_cad">CAD</string>
+    <string name="pref_show_cad" translatable="false">show_cad</string>
+    <string name="pref_sek">SEK</string>
+    <string name="pref_show_sek" translatable="false">show_sek</string>
 </resources>

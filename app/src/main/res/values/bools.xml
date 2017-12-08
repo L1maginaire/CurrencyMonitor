@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="pref_eur">true</bool>
+    <bool name="pref_usd">true</bool>
+    <bool name="pref_jpy">true</bool>
+    <bool name="pref_gbp">true</bool>
+    <bool name="pref_chf">true</bool>
+    <bool name="pref_aud">true</bool>
+    <bool name="pref_cad">true</bool>
+    <bool name="pref_sek">true</bool>
+</resources>

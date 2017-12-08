@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:defaultValue="@bool/pref_eur"
+        android:key="@string/pref_show_eur"
+        android:title="@string/pref_eur" />
+
+    <CheckBoxPreference
+        android:defaultValue="@bool/pref_usd"
+        android:key="@string/pref_show_usd"
+        android:title="@string/pref_usd"
+        android:icon="@mipmap/exchange"/>
+
+    <CheckBoxPreference
+        android:defaultValue="@bool/pref_jpy"
+        android:key="@string/pref_show_jpy"
+        android:title="@string/pref_jpy" />
+
+    <CheckBoxPreference
+        android:defaultValue="@bool/pref_gbp"
+        android:key="@string/pref_show_gbp"
+        android:title="@string/pref_gbp" />
+
+    <CheckBoxPreference
+        android:defaultValue="@bool/pref_chf"
+        android:key="@string/pref_show_chf"
+        android:title="@string/pref_chf" />
+
+    <CheckBoxPreference
+        android:defaultValue="@bool/pref_aud"
+        android:key="@string/pref_show_aud"
+        android:title="@string/pref_aud" />
+
+    <CheckBoxPreference
+        android:defaultValue="@bool/pref_cad"
+        android:key="@string/pref_show_cad"
+        android:title="@string/pref_cad" />
+
+    <CheckBoxPreference
+        android:defaultValue="@bool/pref_sek"
+        android:key="@string/pref_show_sek"
+        android:title="@string/pref_sek" />
+
+</PreferenceScreen>
