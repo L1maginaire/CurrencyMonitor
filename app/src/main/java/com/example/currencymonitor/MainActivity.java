@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import retrofit2.Call;
@@ -22,10 +21,8 @@ import retrofit2.Response;
 import com.example.currencymonitor.data.MetaCurr;
 import com.example.currencymonitor.data.db.CurrencyDBHelper;
 
-import static android.provider.BaseColumns._ID;
-//import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_DATE;
+import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_AUD;
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_DATE;
-import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_JSON;
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.CURRENCY;
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.TABLE_NAME;
 
@@ -77,10 +74,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             public void onResponse(Call<MetaCurr> call, Response<MetaCurr> response) {
                 if (response.isSuccessful() || response.body() != null) {
                     dbHelper = new CurrencyDBHelper(MainActivity.this);
-                    mDb = dbHelper.getReadableDatabase();
+                    mDb = dbHelper.getWritableDatabase();
                     ContentValues cv = new ContentValues();
-                    cv.put(CURRENCY, "bla");
-                    cv.put(COLUMN_JSON, response.body().getBase());
+                    cv.put(CURRENCY, response.body().getBase());
+                    cv.put(COLUMN_AUD, response.body().getRates().g);
                     long f = mDb.insert(TABLE_NAME, null, cv);
                     Toast.makeText(MainActivity.this, "sucess", Toast.LENGTH_SHORT).show();
                     Log.i(TAG, getS());
@@ -107,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         String s = null;
         Cursor cursor = mDb.query(TABLE_NAME, null,null, null, null, null, null);
         boolean abc = cursor.moveToFirst(); // <-- First call
-        s = cursor.getString(cursor.getColumnIndex(CURRENCY));
+        s = cursor.getString(cursor.getColumnIndex(COLUMN_DATE));
         /*
         if (cursor != null)
         {
