@@ -35,6 +35,7 @@ public class SplashActivity extends AppCompatActivity {
     private final static String TAG = /*MainActivity.class.getSimpleName()*/"abc";
     private SQLiteDatabase mDb;
     private CurrencyDBHelper dbHelper;
+    private int counter = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,15 +46,12 @@ public class SplashActivity extends AppCompatActivity {
         extraction("EUR");
         extraction("USD");
         extraction("JPY");
-        extraction("GPB");
+        extraction("GBP");
         extraction("CHF");
         extraction("AUD");
         extraction("CAD");
         extraction("SEK");
-
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
+        //TODO: prevention of middle-crack
     }
 
     void extraction(String query) {
@@ -62,7 +60,11 @@ public class SplashActivity extends AppCompatActivity {
             public void onResponse(Call<MetaCurr> call, Response<MetaCurr> response) {
                 if (response.isSuccessful() || response.body() != null) {
                     insert(response.body());
+                    if (counter == 8) {
+                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    }
                 } else {
+                    //TODO: error_cases
                     try {
                         Log.d(TAG, response.body().getBase().toString());
                     } catch (NullPointerException e) {
@@ -79,7 +81,7 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
 
-    private void insert(MetaCurr meta){
+    private void insert(MetaCurr meta) {
         ContentValues cv = new ContentValues();
         cv.put(CURRENCY, meta.getBase());
         cv.put(COLUMN_DATE, System.currentTimeMillis());
@@ -91,6 +93,8 @@ public class SplashActivity extends AppCompatActivity {
         cv.put(COLUMN_AUD, meta.getRates().getAUD());
         cv.put(COLUMN_CAD, meta.getRates().getCAD());
         cv.put(COLUMN_SEK, meta.getRates().getSEK());
-        mDb.insert(TABLE_NAME, null, cv);
+        long l = mDb.insert(TABLE_NAME, null, cv);
+        if (l >= 0)
+            counter++;
     }
 }

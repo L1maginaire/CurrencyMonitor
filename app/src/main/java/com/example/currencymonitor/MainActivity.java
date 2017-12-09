@@ -8,10 +8,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import retrofit2.Call;
@@ -22,6 +29,8 @@ import com.example.currencymonitor.data.MetaCurr;
 import com.example.currencymonitor.data.db.CurrencyDBHelper;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_AUD;
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_CAD;
@@ -46,7 +55,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         dbHelper = new CurrencyDBHelper(MainActivity.this);
         mDb = dbHelper.getWritableDatabase();
         Cursor cursor = mDb.query(TABLE_NAME, null,null, null, null, null, null);
-        boolean abc = cursor.moveToPosition(6);
+        boolean abc = cursor.moveToPosition(5);
+
         String abdc = cursor.getString(cursor.getColumnIndex(CURRENCY));
         String s = cursor.getString(cursor.getColumnIndex(COLUMN_USD));
         mDb.close();
