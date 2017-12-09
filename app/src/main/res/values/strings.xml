@@ -17,4 +17,9 @@
     <string name="pref_show_cad" translatable="false">show_cad</string>
     <string name="pref_sek">SEK</string>
     <string name="pref_show_sek" translatable="false">show_sek</string>
+    <string-array name="spinner_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 </resources>
