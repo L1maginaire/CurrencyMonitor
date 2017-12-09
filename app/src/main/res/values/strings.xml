@@ -18,8 +18,13 @@
     <string name="pref_sek">SEK</string>
     <string name="pref_show_sek" translatable="false">show_sek</string>
     <string-array name="spinner_array">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
+        <item>EUR</item>
+        <item>USD</item>
+        <item>JPY</item>
+        <item>GBP</item>
+        <item>CHF</item>
+        <item>AUD</item>
+        <item>CAD</item>
+        <item>SEK</item>
     </string-array>
 </resources>
