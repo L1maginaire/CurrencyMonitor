@@ -1,16 +1,14 @@
 package com.example.currencymonitor;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,31 +19,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import com.example.currencymonitor.data.MetaCurr;
 import com.example.currencymonitor.data.db.CurrencyDBHelper;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_AUD;
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_CAD;
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_CHF;
-import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_DATE;
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_EUR;
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_GBP;
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_JPY;
@@ -59,16 +46,19 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private CurrencyDBHelper dbHelper;
     private TextView last_update;
     private Adapter mAdapter;
+    private RecyclerView recyclerView;
     private LinkedHashMap<String, HashMap<String, Double>> table;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        last_update = (TextView) findViewById(R.id.last_update);
         table = new LinkedHashMap<>();
         assembly();
+        recyclerView = (RecyclerView) this.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new Adapter(this, table.get("EUR"));
+        recyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -89,22 +79,42 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 Object item = adapterView.getItemAtPosition(position);
                 if (item != null) {
                     switch (position){
+                        case 0:
+                            mAdapter = new Adapter(MainActivity.this, table.get("EUR"));
+                            recyclerView.setAdapter(mAdapter);
+                            mAdapter.notifyDataSetChanged();
+                            Log.i("abc", String.valueOf(position));
+                            break;
                         case 1:
-                            table.get("EUR");
+                            mAdapter = new Adapter(MainActivity.this, table.get("USD"));
+                            recyclerView.setAdapter(mAdapter);
+                            mAdapter.notifyDataSetChanged();
+                            Log.i("abc", String.valueOf(position));
+                            break;
                         case 2:
-                            table.get("USD");
+                            mAdapter = new Adapter(MainActivity.this, table.get("JPY"));
+                            mAdapter.notifyDataSetChanged();
+                            break;
                         case 3:
-                            table.get("JPY");
+                            mAdapter = new Adapter(MainActivity.this, table.get("GBP"));
+                            mAdapter.notifyDataSetChanged();
+                            break;
                         case 4:
-                            table.get("GBP");
+                            mAdapter = new Adapter(MainActivity.this, table.get("CHF"));
+                            mAdapter.notifyDataSetChanged();
+                            break;
                         case 5:
-                            table.get("CHF");
+                            mAdapter = new Adapter(MainActivity.this, table.get("AUD"));
+                            mAdapter.notifyDataSetChanged();
+                            break;
                         case 6:
-                            table.get("AUD");
+                            mAdapter = new Adapter(MainActivity.this, table.get("CAD"));
+                            mAdapter.notifyDataSetChanged();
+                            break;
                         case 7:
-                            table.get("CAD");
-                        case 8:
-                            table.get("SEK");
+                            mAdapter = new Adapter(MainActivity.this, table.get("SEK"));
+                            mAdapter.notifyDataSetChanged();
+                            break;
                     }
                 }
                 /*Toast.makeText(MainActivity.this, "Selected",
@@ -157,11 +167,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             mImageView = (ImageView) itemView.findViewById(R.id.single_item_imageview);
         }
 
-        public void bindCrime(List<String> list) {
-            this.list = list;
-            mTitleTextView.setText("S");
-
-        }
+//        public void bindCrime(List<String> keys) {
+//            this.keys = keys;
+//            mTitleTextView.setText("S");
+//
+//        }
 
         @Override
         public void onClick(View v) {
@@ -170,12 +180,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     private class Adapter extends RecyclerView.Adapter<Holder> {
-        private ArrayList list;
+        private ArrayList keys;
+        private ArrayList values;
         private Context mContext;
 
         public Adapter(Context context, HashMap<String, Double> hashMap) {
             mContext = context;
-            list = new ArrayList(hashMap.keySet());
+            keys = new ArrayList(hashMap.keySet());
+            values = new ArrayList(hashMap.values());
         }
 
         @Override
@@ -187,13 +199,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         @Override
         public void onBindViewHolder(Holder holder, int position) {
-            String name = (String) list.get(position);
-            holder.mTitleTextView.setText(name);
+            Double val = (Double) values.get(position);
+            holder.mTitleTextView.setText(String.valueOf(val));
         }
 
         @Override
         public int getItemCount() {
-            return mCursor.getCount();
+            return keys.size();
         }
     }
 
