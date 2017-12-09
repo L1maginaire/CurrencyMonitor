@@ -93,7 +93,7 @@ public class SplashActivity extends AppCompatActivity {
         cv.put(COLUMN_AUD, meta.getRates().getAUD());
         cv.put(COLUMN_CAD, meta.getRates().getCAD());
         cv.put(COLUMN_SEK, meta.getRates().getSEK());
-        long l = mDb.insert(TABLE_NAME, null, cv);
+        long l = mDb.insert(TABLE_NAME, null, cv);//TODO: close?
         if (l >= 0)
             counter++;
     }
