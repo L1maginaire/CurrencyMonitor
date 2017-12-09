@@ -93,27 +93,39 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                             break;
                         case 2:
                             mAdapter = new Adapter(MainActivity.this, table.get("JPY"));
+                            recyclerView.setAdapter(mAdapter);
                             mAdapter.notifyDataSetChanged();
+                            Log.i("abc", String.valueOf(position));
                             break;
                         case 3:
                             mAdapter = new Adapter(MainActivity.this, table.get("GBP"));
+                            recyclerView.setAdapter(mAdapter);
                             mAdapter.notifyDataSetChanged();
+                            Log.i("abc", String.valueOf(position));
                             break;
                         case 4:
                             mAdapter = new Adapter(MainActivity.this, table.get("CHF"));
+                            recyclerView.setAdapter(mAdapter);
                             mAdapter.notifyDataSetChanged();
+                            Log.i("abc", String.valueOf(position));
                             break;
                         case 5:
                             mAdapter = new Adapter(MainActivity.this, table.get("AUD"));
+                            recyclerView.setAdapter(mAdapter);
                             mAdapter.notifyDataSetChanged();
+                            Log.i("abc", String.valueOf(position));
                             break;
                         case 6:
                             mAdapter = new Adapter(MainActivity.this, table.get("CAD"));
+                            recyclerView.setAdapter(mAdapter);
                             mAdapter.notifyDataSetChanged();
+                            Log.i("abc", String.valueOf(position));
                             break;
                         case 7:
                             mAdapter = new Adapter(MainActivity.this, table.get("SEK"));
+                            recyclerView.setAdapter(mAdapter);
                             mAdapter.notifyDataSetChanged();
+                            Log.i("abc", String.valueOf(position));
                             break;
                     }
                 }
