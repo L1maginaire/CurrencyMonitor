@@ -15,6 +15,9 @@ import android.widget.Toast;
 import com.example.currencymonitor.data.MetaCurr;
 import com.example.currencymonitor.data.db.CurrencyDBHelper;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,21 +39,15 @@ public class SplashActivity extends AppCompatActivity {
     private SQLiteDatabase mDb;
     private CurrencyDBHelper dbHelper;
     private int counter = 0;
+    private static String[] sequence;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dbHelper = new CurrencyDBHelper(SplashActivity.this);
         mDb = dbHelper.getWritableDatabase();
-
+        sequence = new String[]{"USD", "JPY", "GBP", "CHF", "AUD", "CAD", "SEK"};
         extraction("EUR");
-        extraction("USD");
-        extraction("JPY");
-        extraction("GBP");
-        extraction("CHF");
-        extraction("AUD");
-        extraction("CAD");
-        extraction("SEK");
         //TODO: prevention of middle-crack
     }
 
@@ -62,6 +59,8 @@ public class SplashActivity extends AppCompatActivity {
                     insert(response.body());
                     if (counter == 8) {
                         startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    } else {
+                        extraction(sequence[counter - 1]);
                     }
                 } else {
                     //TODO: error_cases
