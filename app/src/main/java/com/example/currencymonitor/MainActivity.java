@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private TextView last_update;
     private Adapter mAdapter;
     private RecyclerView recyclerView;
-    private LinkedHashMap<String, HashMap<String, Double>> table;
     private int[] myImageList;
 
     @Override
@@ -56,11 +55,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         setContentView(R.layout.activity_main);
         myImageList = new int[]{R.drawable.european_union, R.drawable.united_states, R.drawable.japan, R.drawable.united_kingdom, R.drawable.switzerland,
         R.drawable.australia, R.drawable.canada, R.drawable.sweden};
-        table = new LinkedHashMap<>();
-        assembly();
+        dbHelper = new CurrencyDBHelper(MainActivity.this);
+        mDb = dbHelper.getReadableDatabase();
+        Cursor cursor = mDb.query(TABLE_NAME, null, null, null, null, null, null);
         recyclerView = (RecyclerView) this.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new Adapter(this, table.get("EUR"));
+        mAdapter = new Adapter(this, cursor);
         recyclerView.setAdapter(mAdapter);
     }
 
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
-        MenuItem item = menu.findItem(R.id.mspinner);
+        /*MenuItem item = menu.findItem(R.id.mspinner);
         Spinner spinner = (Spinner) item.getActionView();
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.spinner_array, android.R.layout.simple_spinner_item);
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 // TODO Auto-generated method stub
 
             }
-        });
+        });*/
 
         return true;
     }
@@ -167,7 +167,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     private class Holder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        List<String> list;
         private TextView mTitleTextView;
         private ImageView mImageView;
 
@@ -185,14 +184,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     private class Adapter extends RecyclerView.Adapter<Holder> {
-        private ArrayList keys;
-        private ArrayList values;
         private Context mContext;
+        Cursor mCursor;
 
-        public Adapter(Context context, HashMap<String, Double> hashMap) {
+        public Adapter(Context context, Cursor cursor) {
+            mCursor = cursor;
             mContext = context;
-            keys = new ArrayList(hashMap.keySet());
-            values = new ArrayList(hashMap.values());
         }
 
         @Override
@@ -204,36 +201,19 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         @Override
         public void onBindViewHolder(Holder holder, int position) {
-            Double val = (Double) values.get(position);
+            if (!mCursor.moveToPosition(position))
+                return;
+            double val = (Double) mCursor.getDouble(mCursor.getColumnIndex(COLUMN_EUR));
+            if(val == 0.0){
+                //TODO: HIDE
+            }
             holder.mTitleTextView.setText(String.valueOf(val));
             holder.mImageView.setImageResource(myImageList[position]);
         }
 
         @Override
         public int getItemCount() {
-            return keys.size();
+            return mCursor.getCount();
         }
-    }
-
-    private void assembly(){
-        dbHelper = new CurrencyDBHelper(MainActivity.this);
-        mDb = dbHelper.getReadableDatabase();
-        Cursor cursor = mDb.query(TABLE_NAME, null, null, null, null, null, null);
-        for (int i = 0; i<=8 /*TODO: откуда?*/; i++){
-            if (!cursor.moveToPosition(i))
-                continue;
-            String base = cursor.getString(cursor.getColumnIndex(CURRENCY));
-            HashMap<String, Double> val = new HashMap<>();
-            val.put("EUR", cursor.getDouble(cursor.getColumnIndex(COLUMN_EUR)));
-            val.put("USD", cursor.getDouble(cursor.getColumnIndex(COLUMN_USD)));
-            val.put("JPY", cursor.getDouble(cursor.getColumnIndex(COLUMN_JPY)));
-            val.put("GBP", cursor.getDouble(cursor.getColumnIndex(COLUMN_GBP)));
-            val.put("CHF", cursor.getDouble(cursor.getColumnIndex(COLUMN_CHF)));
-            val.put("AUD", cursor.getDouble(cursor.getColumnIndex(COLUMN_AUD)));
-            val.put("CAD", cursor.getDouble(cursor.getColumnIndex(COLUMN_CAD)));
-            val.put("SEK", cursor.getDouble(cursor.getColumnIndex(COLUMN_SEK)));
-            table.put(base, val);
-        }
-        mDb.close();
     }
 }

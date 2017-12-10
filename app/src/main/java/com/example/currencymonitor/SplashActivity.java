@@ -46,8 +46,8 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         dbHelper = new CurrencyDBHelper(SplashActivity.this);
         mDb = dbHelper.getWritableDatabase();
-        sequence = new String[]{"USD", "JPY", "GBP", "CHF", "AUD", "CAD", "SEK"};
-        extraction("EUR");
+        sequence = new String[]{"EUR","USD", "JPY", "GBP", "CHF", "AUD", "CAD", "SEK"};
+        extraction(sequence[counter]);
         //TODO: prevention of middle-crack
     }
 
@@ -57,13 +57,13 @@ public class SplashActivity extends AppCompatActivity {
             public void onResponse(Call<MetaCurr> call, Response<MetaCurr> response) {
                 if (response.isSuccessful() || response.body() != null) {
                     insert(response.body());
-                    if (counter == 8) {
+                    if (counter == sequence.length) {
                         startActivity(new Intent(SplashActivity.this, MainActivity.class));
                     } else {
-                        extraction(sequence[counter - 1]);
+                        extraction(sequence[counter]);
                     }
                 } else {
-                    //TODO: error_cases
+                    //TODO: error
                     try {
                         Log.d(TAG, response.body().getBase().toString());
                     } catch (NullPointerException e) {
