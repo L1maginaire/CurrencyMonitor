@@ -35,7 +35,7 @@ import static com.example.currencymonitor.data.db.CurrencyContract.Entry.CURRENC
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.TABLE_NAME;
 
 public class SplashActivity extends AppCompatActivity {
-    private final static String TAG = /*MainActivity.class.getSimpleName()*/"abc";
+    private final static String TAG = MainActivity.class.getSimpleName();
     private SQLiteDatabase mDb;
     private CurrencyDBHelper dbHelper;
     private int counter = 0;
@@ -46,7 +46,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         dbHelper = new CurrencyDBHelper(SplashActivity.this);
         mDb = dbHelper.getWritableDatabase();
-        sequence = new String[]{"EUR","USD", "JPY", "GBP", "CHF", "AUD", "CAD", "SEK"};
+        sequence = new String[]{"EUR", "USD", "JPY", "GBP", "CHF", "AUD", "CAD", "SEK"};
         extraction(sequence[counter]);
         //TODO: prevention of middle-crack
     }

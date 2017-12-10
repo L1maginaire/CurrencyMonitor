@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static android.provider.BaseColumns._ID;
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_AUD;
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_CAD;
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_CHF;
@@ -57,7 +58,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         R.drawable.australia, R.drawable.canada, R.drawable.sweden};
         dbHelper = new CurrencyDBHelper(MainActivity.this);
         mDb = dbHelper.getReadableDatabase();
-        Cursor cursor = mDb.query(TABLE_NAME, null, null, null, null, null, null);
+        Cursor cursor = mDb.query(TABLE_NAME, new String[]{"eur", "usd", "jpy", "gbp", "chf", "aud", "cad", "sek"}, "_id=?",new String[]{"2"},null,null,null);
+//        Cursor cursor = mDb.query(TABLE_NAME, null, "_ID = 1", null, null, null, null);
         recyclerView = (RecyclerView) this.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new Adapter(this, cursor);
@@ -201,9 +203,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         @Override
         public void onBindViewHolder(Holder holder, int position) {
-            if (!mCursor.moveToPosition(position))
+            if (!mCursor.moveToFirst())
                 return;
-            double val = (Double) mCursor.getDouble(mCursor.getColumnIndex(COLUMN_EUR));
+            double val = (Double) mCursor.getDouble(position);
             if(val == 0.0){
                 //TODO: HIDE
             }
@@ -213,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         @Override
         public int getItemCount() {
-            return mCursor.getCount();
+            return 8;
         }
     }
 }
