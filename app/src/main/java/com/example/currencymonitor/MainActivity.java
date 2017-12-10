@@ -48,11 +48,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private Adapter mAdapter;
     private RecyclerView recyclerView;
     private LinkedHashMap<String, HashMap<String, Double>> table;
+    private int[] myImageList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        myImageList = new int[]{R.drawable.european_union, R.drawable.united_states, R.drawable.japan, R.drawable.united_kingdom, R.drawable.switzerland,
+        R.drawable.australia, R.drawable.canada, R.drawable.sweden};
         table = new LinkedHashMap<>();
         assembly();
         recyclerView = (RecyclerView) this.findViewById(R.id.recycler_view);
@@ -72,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view,
                                        int position, long id) {
@@ -129,9 +131,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                             break;
                     }
                 }
-                /*Toast.makeText(MainActivity.this, "Selected",
-                        Toast.LENGTH_SHORT).show();*/
-
             }
 
             @Override
@@ -179,12 +178,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             mImageView = (ImageView) itemView.findViewById(R.id.single_item_imageview);
         }
 
-//        public void bindCrime(List<String> keys) {
-//            this.keys = keys;
-//            mTitleTextView.setText("S");
-//
-//        }
-
         @Override
         public void onClick(View v) {
 
@@ -213,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         public void onBindViewHolder(Holder holder, int position) {
             Double val = (Double) values.get(position);
             holder.mTitleTextView.setText(String.valueOf(val));
+            holder.mImageView.setImageResource(myImageList[position]);
         }
 
         @Override
