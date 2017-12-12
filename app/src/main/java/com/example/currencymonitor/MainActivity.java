@@ -5,21 +5,28 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.currencymonitor.data.db.CurrencyDBHelper;
+
+import java.util.ArrayList;
 
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.TABLE_NAME;
 
@@ -36,17 +43,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         last_update = findViewById(R.id.last_update_date);
-        myImageList = new int[]{R.drawable.european_union, R.drawable.united_states, R.drawable.japan, R.drawable.united_kingdom, R.drawable.switzerland,
-                R.drawable.australia, R.drawable.canada, R.drawable.sweden};
         dbHelper = new CurrencyDBHelper(MainActivity.this);
         mDb = dbHelper.getReadableDatabase();
         Cursor cursor = mDb.query(TABLE_NAME, new String[]{"eur", "usd", "jpy", "gbp", "chf", "aud", "cad", "sek"}, "_id=?", new String[]{"1"}, null, null, null);
+        ArrayList<CurrencyData> list = new ArrayList<>();
         recyclerView = (RecyclerView) this.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new Adapter(this, cursor);
+        mAdapter = new Adapter(this, bindData(cursor, list));
         recyclerView.setAdapter(mAdapter);
         last_update.setText("Last update: " + android.text.format.DateFormat.format("dd-yyyy-MM hh:mm", SplashActivity.mLastUpdateTime));
-        last_update.requestFocus();
     }
 
     @Override
@@ -98,15 +103,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private class Adapter extends RecyclerView.Adapter<Holder> {
         private Context mContext;
-        Cursor mCursor;
+        ArrayList<CurrencyData> list;
 
-        public Adapter(Context context, Cursor cursor) {
-            mCursor = cursor;
+        public Adapter(Context context, ArrayList<CurrencyData> list) {
             mContext = context;
-        }
-
-        public void setData(Cursor cursor) {
-            mCursor = cursor;
+            this.list = list;
         }
 
         @Override
@@ -116,21 +117,63 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             return new Holder(view);
         }
 
+
+
         @Override
         public void onBindViewHolder(Holder holder, final int position) {
-            if (!mCursor.moveToFirst())
+            if (list == null || list.size() == 0)
                 return;
-            double val = (Double) mCursor.getDouble(position);
-            if (val == 0.0) {
-                val = 1.0;
-            }
+            double val = (Double) list.get(position).getValue();
+            int res = (Integer) list.get(position).getPic();
             holder.mEditText.setText(String.valueOf(val));
-            holder.mImageView.setImageResource(myImageList[position]);
+            holder.mEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    double coef = list.get(position).getCoefficient();
+                    list.get(position).setValue(coef*Double.valueOf(s.toString()));
+                    Handler h = new Handler(Looper.getMainLooper());
+                    h.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            notifyDataSetChanged();
+                        }
+                    });
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+            holder.mImageView.setImageResource(res);
         }
 
         @Override
         public int getItemCount() {
-            return 7;
+            return 8;
         }
+    }
+
+    private ArrayList<CurrencyData> bindData(Cursor c, ArrayList<CurrencyData> list) {
+        if (c == null || !c.moveToFirst()) {
+            return list;
+        } else {
+            myImageList = new int[]{R.drawable.european_union, R.drawable.united_states, R.drawable.japan, R.drawable.united_kingdom, R.drawable.switzerland,
+                    R.drawable.australia, R.drawable.canada, R.drawable.sweden};
+
+            for(int i = 0; i<myImageList.length; i++){
+                CurrencyData data = new CurrencyData();
+                data.setCoefficient((c.getDouble(i)) == 0.0 ? 1.0 : c.getDouble(i));
+                data.setValue(c.getDouble(i) * 1/*//todo*/);
+                data.setPic(myImageList[i]);
+                list.add(data);
+            }
+        }
+        return list;
     }
 }
