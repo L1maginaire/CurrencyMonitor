@@ -45,15 +45,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         last_update = findViewById(R.id.last_update_date);
-//        abc = findViewById(R.id.abc);
         dbHelper = new CurrencyDBHelper(MainActivity.this);
         mDb = dbHelper.getReadableDatabase();
-        Cursor cursor = mDb.query(TABLE_NAME, new String[]{"eur", "usd", "jpy", "gbp", "chf", "aud", "cad", "sek"}, "_id=?", new String[]{"1"},
-                null, null, null);
+        Cursor cursor = mDb.query(TABLE_NAME, null, null, null, null, null, null);
         list = new ArrayList<>();
+        bindData(cursor);
         recyclerView = (RecyclerView) this.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new Adapter(this, bindData(cursor, list));
+        mAdapter = new Adapter(this, list);
         recyclerView.setAdapter(mAdapter);
         last_update.setText("Last update: " + android.text.format.DateFormat.format("dd-yyyy-MM hh:mm", SplashActivity.mLastUpdateTime));
 //        abc.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             @Override
             public void afterTextChanged(Editable s) {
                 double coef = Double.valueOf(s.toString());
-                for (CurrencyData c:list) {
+                for (CurrencyData c : list) {
                     c.setValue(coef);
                 }
                 entryfield.clearFocus();//todo: ?
@@ -149,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
 
 
-
         @Override
         public void onBindViewHolder(Holder holder, final int position) {
             if (list == null || list.size() == 0)
@@ -166,15 +164,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
-    private ArrayList<CurrencyData> bindData(Cursor c, ArrayList<CurrencyData> list) {
+    private void bindData(Cursor c) {
         if (c == null || !c.moveToFirst()) {
-            return list;
+            return;
         } else {
             int[] myImageList = new int[]{R.drawable.european_union, R.drawable.united_states, R.drawable.japan, R.drawable.united_kingdom, R.drawable.switzerland,
                     R.drawable.australia, R.drawable.canada, R.drawable.sweden};
 
-            for(int i = 0; i<myImageList.length
-                    ; i++){
+            for (int i = 0; i < myImageList.length
+                    ; i++) {
                 CurrencyData data = new CurrencyData();
                 data.setCoefficient((c.getDouble(i)) == 0.0 ? 1.0 : c.getDouble(i));
                 data.setValue(c.getDouble(i) * 1/*//todo*/);
@@ -182,6 +180,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 list.add(data);
             }
         }
-        return list;
+        return;
     }
 }

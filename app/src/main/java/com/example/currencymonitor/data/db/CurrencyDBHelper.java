@@ -18,21 +18,23 @@ public class CurrencyDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         final String SQL_CREATE_WEATHER_TABLE =
-                "CREATE TABLE " + TABLE_NAME + " (" +
+                "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                         CurrencyContract.Entry.CURRENCY         + " STRING NOT NULL, " +
-                        CurrencyContract.Entry.COLUMN_EUR       + " DOUBLE NOT NULL, " +
-                        CurrencyContract.Entry.COLUMN_USD       + " DOUBLE NOT NULL, " +
-                        CurrencyContract.Entry.COLUMN_JPY       + " DOUBLE NOT NULL, " +
-                        CurrencyContract.Entry.COLUMN_GBP       + " DOUBLE NOT NULL, " +
-                        CurrencyContract.Entry.COLUMN_CHF       + " DOUBLE NOT NULL, " +
-                        CurrencyContract.Entry.COLUMN_AUD       + " DOUBLE NOT NULL, " +
-                        CurrencyContract.Entry.COLUMN_CAD       + " DOUBLE NOT NULL, " +
-                        CurrencyContract.Entry.COLUMN_SEK       + " DOUBLE NOT NULL" +
+                        CurrencyContract.Entry.COLUMN_EUR       + " DOUBLE, " +
+                        CurrencyContract.Entry.COLUMN_USD       + " DOUBLE, " +
+                        CurrencyContract.Entry.COLUMN_JPY       + " DOUBLE, " +
+                        CurrencyContract.Entry.COLUMN_GBP       + " DOUBLE, " +
+                        CurrencyContract.Entry.COLUMN_CHF       + " DOUBLE, " +
+                        CurrencyContract.Entry.COLUMN_AUD       + " DOUBLE, " +
+                        CurrencyContract.Entry.COLUMN_CAD       + " DOUBLE, " +
+                        CurrencyContract.Entry.COLUMN_SEK       + " DOUBLE" +
                         "); ";
         db.execSQL(SQL_CREATE_WEATHER_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + CurrencyContract.Entry.TABLE_NAME);
+        onCreate(db);
     }
 }
