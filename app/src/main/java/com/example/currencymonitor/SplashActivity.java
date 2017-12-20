@@ -53,8 +53,8 @@ public class SplashActivity extends AppCompatActivity {
         dbHelper = new CurrencyDBHelper(SplashActivity.this);
         fixerAPI = App.getApi();
         mDb = dbHelper.getWritableDatabase();
-//        if (dbExists(mDb))
-//            mDb.delete(TABLE_NAME, null, null);
+        if (dbExists(mDb))
+            mDb.delete(TABLE_NAME, null, null);
         if (!isOnline()) {
             Toast.makeText(this, "Check you Internet connection!", Toast.LENGTH_LONG).show(); //todo: broadcast
             return;
