@@ -5,11 +5,12 @@ package com.example.currencymonitor.data;
 
 import java.util.List;
 
+import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface FixerAPI {
     @GET("latest")
-    Call<MetaCurr> getData(@Query("base") String baseCurrency);
+    Single<MetaCurr> getData(@Query("base") String baseCurrency);
 }

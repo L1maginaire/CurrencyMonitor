@@ -19,16 +19,15 @@ public class CurrencyDBHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_WEATHER_TABLE =
                 "CREATE TABLE " + TABLE_NAME + " (" +
-                        CurrencyContract.Entry._ID              + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         CurrencyContract.Entry.CURRENCY         + " STRING NOT NULL, " +
-                        CurrencyContract.Entry.COLUMN_EUR       + " DOUBLE, " +
-                        CurrencyContract.Entry.COLUMN_USD       + " DOUBLE, " +
-                        CurrencyContract.Entry.COLUMN_JPY       + " DOUBLE, " +
-                        CurrencyContract.Entry.COLUMN_GBP       + " DOUBLE, " +
-                        CurrencyContract.Entry.COLUMN_CHF       + " DOUBLE, " +
-                        CurrencyContract.Entry.COLUMN_AUD       + " DOUBLE, " +
-                        CurrencyContract.Entry.COLUMN_CAD       + " DOUBLE, " +
-                        CurrencyContract.Entry.COLUMN_SEK       + " DOUBLE" +
+                        CurrencyContract.Entry.COLUMN_EUR       + " DOUBLE NOT NULL, " +
+                        CurrencyContract.Entry.COLUMN_USD       + " DOUBLE NOT NULL, " +
+                        CurrencyContract.Entry.COLUMN_JPY       + " DOUBLE NOT NULL, " +
+                        CurrencyContract.Entry.COLUMN_GBP       + " DOUBLE NOT NULL, " +
+                        CurrencyContract.Entry.COLUMN_CHF       + " DOUBLE NOT NULL, " +
+                        CurrencyContract.Entry.COLUMN_AUD       + " DOUBLE NOT NULL, " +
+                        CurrencyContract.Entry.COLUMN_CAD       + " DOUBLE NOT NULL, " +
+                        CurrencyContract.Entry.COLUMN_SEK       + " DOUBLE NOT NULL" +
                         "); ";
         db.execSQL(SQL_CREATE_WEATHER_TABLE);
     }

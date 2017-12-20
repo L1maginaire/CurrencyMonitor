@@ -4,16 +4,10 @@
     android:layout_height="wrap_content"
     android:padding="5dp">
 
-    <EditText
-        android:id="@+id/single_item_edittext"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:gravity="center_vertical"
-        android:textSize="20dp"
-        android:inputType="number"
-        android:digits="0123456789."
-        android:singleLine="true"/>
+        android:id="@+id/result"/>
 
     <ImageView
         android:id="@+id/single_item_imageview"

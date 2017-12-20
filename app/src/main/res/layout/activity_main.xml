@@ -2,6 +2,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    <EditText
+        android:id="@+id/entryfield"
+        android:layout_width="wrap_content"
+        android:inputType="textNoSuggestions"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_vertical"
+        android:textSize="20dp"
+        android:digits="0123456789."
+        android:singleLine="true"/>
 
     <TextView
         android:id="@+id/last_update_date"

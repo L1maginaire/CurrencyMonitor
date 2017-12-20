@@ -1,22 +1,34 @@
 package com.example.currencymonitor;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.currencymonitor.data.FixerAPI;
 import com.example.currencymonitor.data.MetaCurr;
+import com.example.currencymonitor.data.Rates;
 import com.example.currencymonitor.data.db.CurrencyDBHelper;
 
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.provider.BaseColumns._ID;
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_AUD;
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_CAD;
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.COLUMN_CHF;
@@ -34,61 +46,85 @@ public class SplashActivity extends AppCompatActivity {
     private SQLiteDatabase mDb;
     private CurrencyDBHelper dbHelper;
     private int counter = 0;
-    private static String[] sequence;
+    private FixerAPI fixerAPI;
+
+    private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dbHelper = new CurrencyDBHelper(SplashActivity.this);
         mDb = dbHelper.getWritableDatabase();
-        sequence = new String[]{"EUR", "USD", "JPY", "GBP", "CHF", "AUD", "CAD", "SEK"};
-        extraction(sequence[counter]);
-        //TODO: prevention of middle-crack
+        if (dbExists(mDb))
+            mDb.delete(TABLE_NAME, null, null);
+        if (!isOnline()) {
+            Toast.makeText(this, "Check you Internet connection!", Toast.LENGTH_LONG).show(); //todo: broadcast
+            return;
+        }
+        fixerAPI = App.getApi();
+//        String[] sequence = new String[]{"EUR", "USD", "JPY", "GBP", "CHF", "AUD", "CAD", "SEK"}; //todo mainthread
+//        for (String s:sequence) {
+            requestRX("EUR");
+//        }
+//        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+
     }
 
-    void extraction(String query) {
-        App.getApi().getData(query).enqueue(new Callback<MetaCurr>() {
-            @Override
-            public void onResponse(Call<MetaCurr> call, Response<MetaCurr> response) {
-                if (response.isSuccessful() || response.body() != null) {
-                    insert(response.body());
-                    if (counter == sequence.length) {
-                        mLastUpdateTime = System.currentTimeMillis();
-                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                    } else {
-                        extraction(sequence[counter]);
+    private void requestRX(final String currecy) {
+        mCompositeDisposable.add(fixerAPI.getData(currecy)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Function<MetaCurr, Rates>() {
+                    @Override
+                    public Rates apply(
+                            @NonNull final MetaCurr data)
+                            throws Exception {
+                        return data.getRates();
                     }
-                } else {
-                    //TODO: error
-                    try {
-                        Log.d(TAG, response.body().getBase().toString());
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
+                })
+                .subscribe(new Consumer<Rates>() {
+                    @Override
+                    public void accept(
+                            @NonNull final Rates rates)
+                            throws Exception {
+                        dBinsert(rates, currecy);
                     }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MetaCurr> call, Throwable t) {
-                t.printStackTrace();
-                Toast.makeText(SplashActivity.this, "An error occurred during networking", Toast.LENGTH_SHORT).show();
-            }
-        });
+                })
+        );
     }
 
-    private void insert(MetaCurr meta) {
+    public boolean dbExists(SQLiteDatabase mDb) {
+        Cursor cursor = mDb.query(TABLE_NAME, null, null, null, null, null, null);
+        if (cursor.getCount() > 0) {
+            cursor.close();
+            return true;
+        } else {
+            cursor.close();
+            return false;
+        }
+    }
+
+
+    private void dBinsert(Rates rates, String base) {
         ContentValues cv = new ContentValues();
-        cv.put(CURRENCY, meta.getBase());
-        cv.put(COLUMN_EUR, meta.getRates().getEUR());
-        cv.put(COLUMN_USD, meta.getRates().getUSD());
-        cv.put(COLUMN_JPY, meta.getRates().getJPY());
-        cv.put(COLUMN_GBP, meta.getRates().getGBP());
-        cv.put(COLUMN_CHF, meta.getRates().getCHF());
-        cv.put(COLUMN_AUD, meta.getRates().getAUD());
-        cv.put(COLUMN_CAD, meta.getRates().getCAD());
-        cv.put(COLUMN_SEK, meta.getRates().getSEK());
-        long l = mDb.insert(TABLE_NAME, null, cv);//TODO: close?
-        if(l>=0)
-            counter++;
+        cv.put(CURRENCY, base);
+        cv.put(COLUMN_EUR, rates.getEUR());
+        cv.put(COLUMN_USD, rates.getUSD());
+        cv.put(COLUMN_JPY, rates.getJPY());
+        cv.put(COLUMN_GBP, rates.getGBP());
+        cv.put(COLUMN_CHF, rates.getCHF());
+        cv.put(COLUMN_AUD, rates.getAUD());
+        cv.put(COLUMN_CAD, rates.getCAD());
+        cv.put(COLUMN_SEK, rates.getSEK());
+        long l = mDb.insert(TABLE_NAME, null, cv);
+        Log.d(TAG, "dBinsert: "+String.valueOf(l));
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }
