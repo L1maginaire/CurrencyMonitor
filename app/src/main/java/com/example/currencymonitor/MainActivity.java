@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     c.setValue(coef);
                 }
                 entryfield.clearFocus();//todo: ?
-                mAdapter.notifyDataSetChanged();
+//                mAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -171,12 +171,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             int[] myImageList = new int[]{R.drawable.european_union, R.drawable.united_states, R.drawable.japan, R.drawable.united_kingdom, R.drawable.switzerland,
                     R.drawable.australia, R.drawable.canada, R.drawable.sweden};
 
-            for (int i = 0; i < myImageList.length
-                    ; i++) {
+            for (int i = 1; i < c.getColumnCount(); i++) {
                 CurrencyData data = new CurrencyData();
                 data.setCoefficient((c.getDouble(i)) == 0.0 ? 1.0 : c.getDouble(i));
                 data.setValue(c.getDouble(i) * 1/*//todo*/);
-                data.setPic(myImageList[i]);
+                data.setPic(myImageList[i-1]);
                 list.add(data);
             }
         }
