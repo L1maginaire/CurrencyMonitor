@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             holder.textView.setText(String.valueOf(val));
             holder.mImageView.setImageResource(res);
         }
-
+//
         @Override
         public int getItemCount() {
             return list.size();
