@@ -2,7 +2,6 @@ package com.example.currencymonitor;
 
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -36,28 +35,10 @@ public class LineChartActivity extends FragmentActivity implements OnChartGestur
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_linechart);
 
-        tvX = (TextView) findViewById(R.id.tvXMax);
-        tvY = (TextView) findViewById(R.id.tvYMax);
-
-//        mSeekBarX = (SeekBar) findViewById(R.id.seekBar1);
-//        mSeekBarY = (SeekBar) findViewById(R.id.seekBar2);
-
-//        mSeekBarX.setProgress(45);
-//        mSeekBarY.setProgress(100);
-
-//        mSeekBarY.setOnSeekBarChangeListener(this);
-//        mSeekBarX.setOnSeekBarChangeListener(this);
-
         mChart = (LineChart) findViewById(R.id.chart1);
-//        mChart.setOnChartGestureListener(this);
-//        mChart.setOnChartValueSelectedListener(this);
-//        mChart.setDrawGridBackground(false);
 
-        // no description text
         mChart.getDescription().setEnabled(false);
 
         // enable touch gestures
@@ -129,7 +110,7 @@ public class LineChartActivity extends FragmentActivity implements OnChartGestur
         //mChart.getViewPortHandler().setMaximumScaleX(2f);
 
         // add data
-        setData(45, 100);
+        setData(20, 100);
 
 //        mChart.setVisibleXRange(20);
 //        mChart.setVisibleYRange(20f, AxisDependency.LEFT);
