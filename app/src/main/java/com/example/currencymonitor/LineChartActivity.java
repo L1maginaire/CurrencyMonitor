@@ -26,11 +26,10 @@ import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class LineChartActivity extends FragmentActivity implements OnChartGestureListener{
-
     private LineChart mChart;
-    private TextView tvX, tvY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +41,7 @@ public class LineChartActivity extends FragmentActivity implements OnChartGestur
         mChart.getDescription().setEnabled(false);
 
         // enable touch gestures
-        mChart.setTouchEnabled(true);
+            mChart.setTouchEnabled(true);
 
         // enable scaling and dragging
         mChart.setDragEnabled(true);
@@ -74,29 +73,10 @@ public class LineChartActivity extends FragmentActivity implements OnChartGestur
         //xAxis.setValueFormatter(new MyCustomXAxisValueFormatter());
         //xAxis.addLimitLine(llXAxis); // add x-axis limit line
 
-
-//        Typeface tf = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
-
-        LimitLine ll1 = new LimitLine(150f, "Upper Limit");
-        ll1.setLineWidth(4f);
-        ll1.enableDashedLine(10f, 10f, 0f);
-        ll1.setLabelPosition(LimitLabelPosition.RIGHT_TOP);
-        ll1.setTextSize(10f);
-//        ll1.setTypeface(tf);
-
-        LimitLine ll2 = new LimitLine(-30f, "Lower Limit");
-        ll2.setLineWidth(4f);
-        ll2.enableDashedLine(10f, 10f, 0f);
-        ll2.setLabelPosition(LimitLabelPosition.RIGHT_BOTTOM);
-        ll2.setTextSize(10f);
-//        ll2.setTypeface(tf);
-
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
-        leftAxis.addLimitLine(ll1);
-        leftAxis.addLimitLine(ll2);
-        leftAxis.setAxisMaximum(200f);
-        leftAxis.setAxisMinimum(-50f);
+        leftAxis.setAxisMaximum(1.53f);
+        leftAxis.setAxisMinimum(1.49f);
         //leftAxis.setYOffset(20f);
         leftAxis.enableGridDashedLine(10f, 10f, 0f);
         leftAxis.setDrawZeroLine(false);
@@ -126,7 +106,7 @@ public class LineChartActivity extends FragmentActivity implements OnChartGestur
         l.setForm(LegendForm.LINE);
 
         // // dont forget to refresh the drawing
-        // mChart.invalidate();
+         mChart.invalidate();
     }
 
     @Override
@@ -137,11 +117,12 @@ public class LineChartActivity extends FragmentActivity implements OnChartGestur
     private void setData(int count, float range) {
 
         ArrayList<Entry> values = new ArrayList<Entry>();
+        ArrayList<Float> var = new ArrayList<>(Arrays.asList(new Float[]{1.5221f, 1.5207f, 1.5185f, 1.507f}));
 
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < 4; i++) {
 
-            float val = (float) (Math.random() * range) + 3;
-            values.add(new Entry(i, val, getResources().getDrawable(R.drawable.marker2)));
+            float val = var.get(i);
+            values.add(new Entry(i, val));
         }
 
         LineDataSet set1;
