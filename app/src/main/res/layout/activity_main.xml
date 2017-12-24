@@ -34,14 +34,15 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center_horizontal|bottom"
-            android:layout_weight="5" />
+            android:layout_weight="2" />
 
-        <TextView
-            android:id="@+id/chart"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="5"
-            android:text="blaaa"
-            android:textAlignment="center" />
+        <fragment
+            android:layout_weight="2"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:name="com.example.currencymonitor.LineChartActivity"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/lommeregnerv2">
+    </fragment>
     </LinearLayout>
 </LinearLayout>

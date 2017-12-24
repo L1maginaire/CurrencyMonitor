@@ -12,7 +12,6 @@ import com.github.mikephil.charting.data.CandleEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
-import com.github.mikephil.charting.utils.Utils;
 
 public class MyMarkerView extends MarkerView {
 
@@ -33,7 +32,7 @@ public class MyMarkerView extends MarkerView {
 
             CandleEntry ce = (CandleEntry) e;
 
-            tvContent.setText("" + Utils.formatNumber(ce.getHigh(), 0, true));
+            tvContent.setText(String.valueOf(ce.getHigh()));
         } else {
 
 //            tvContent.setText("" + Utils.formatNumber(e.getY(), 0, true));
