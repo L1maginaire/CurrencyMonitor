@@ -32,7 +32,7 @@ import com.github.mikephil.charting.utils.Utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class LineChartActivity extends Fragment implements OnChartGestureListener{
+public class ChartFragment extends Fragment implements OnChartGestureListener{
     private LineChart mChart;
 
     @Nullable

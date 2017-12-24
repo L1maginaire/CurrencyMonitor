@@ -39,10 +39,10 @@
         <fragment
             android:layout_weight="2"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:name="com.example.currencymonitor.LineChartActivity"
+        android:name="com.example.currencymonitor.ChartFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/lommeregnerv2">
+        android:id="@+id/chartfragment">
     </fragment>
     </LinearLayout>
 </LinearLayout>
