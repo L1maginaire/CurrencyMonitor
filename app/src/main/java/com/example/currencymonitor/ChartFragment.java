@@ -1,5 +1,6 @@
 package com.example.currencymonitor;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.drawable.Drawable;
@@ -14,6 +15,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.currencymonitor.data.FixerAPI;
+import com.example.currencymonitor.data.MetaCurr;
+import com.example.currencymonitor.data.Rates;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.Legend.LegendForm;
@@ -31,10 +35,19 @@ import com.github.mikephil.charting.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 public class ChartFragment extends Fragment implements OnChartGestureListener{
 //    private static final String FLOAT_DATA = "data";
     private LineChart mChart;
+    private ArrayList<Float> floats = new ArrayList<>();
 
 //    public static ChartFragment newInstance(double[] chartdata) {
 //        Bundle args = new Bundle();
@@ -71,14 +84,16 @@ public class ChartFragment extends Fragment implements OnChartGestureListener{
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
-        leftAxis.setAxisMaximum(1.53f);
-        leftAxis.setAxisMinimum(1.49f);
+        leftAxis.setAxisMaximum(1.6f);
+        leftAxis.setAxisMinimum(1.4f);
         leftAxis.enableGridDashedLine(10f, 10f, 0f);
         leftAxis.setDrawZeroLine(false);
         leftAxis.setDrawLimitLinesBehindData(true);
 
         mChart.getAxisRight().setEnabled(false);
-        setData();
+
+        requestRX();
+
         mChart.animateX(2500);
         Legend l = mChart.getLegend();
 
@@ -87,6 +102,44 @@ public class ChartFragment extends Fragment implements OnChartGestureListener{
         mChart.invalidate(); // update data
 
         return v;
+    }
+
+    private void requestRX() {
+        FixerAPI fixerAPI = App.getApi();
+
+        ArrayList <Single<MetaCurr>> arrayList = new ArrayList();
+        arrayList.add(fixerAPI.statistics("2017-12-22"));
+        arrayList.add(fixerAPI.statistics("2017-12-21"));
+        arrayList.add(fixerAPI.statistics("2017-12-20"));
+        arrayList.add(fixerAPI.statistics("2017-12-19"));
+        arrayList.add(fixerAPI.statistics("2017-12-18"));
+        arrayList.add(fixerAPI.statistics("2017-12-17"));
+        arrayList.add(fixerAPI.statistics("2017-12-16"));
+        arrayList.add(fixerAPI.statistics("2017-12-15"));
+        arrayList.add(fixerAPI.statistics("2017-12-14"));
+        arrayList.add(fixerAPI.statistics("2017-12-13"));
+
+        ArrayList <MetaCurr> emptyList = new ArrayList<>();
+
+        Single<List<MetaCurr>> n = Single.merge(arrayList).buffer(Integer.MAX_VALUE).single(emptyList);
+
+        CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+
+        mCompositeDisposable.add(n
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<MetaCurr>>() {
+                    @Override
+                    public void accept(@NonNull final List<MetaCurr> list) throws Exception {
+                        for (MetaCurr m:list) {
+                            double d = m.getRates().getAUD();
+                            Float f=(float)d;
+                            floats.add(f);
+                        }
+                        setData();
+                    }
+                })
+        );
     }
 
     @Override
@@ -102,11 +155,9 @@ public class ChartFragment extends Fragment implements OnChartGestureListener{
     private void setData() {
 
         ArrayList<Entry> values = new ArrayList<Entry>();
-        ArrayList<Float> var = new ArrayList<>(Arrays.asList(new Float[]{1.5221f, 1.5207f, 1.5185f, 1.507f}));
 
-        for (int i = 0; i < 4; i++) {
-
-            float val = var.get(i);
+        for (int i = 0; i < floats.size(); i++) {
+            float val = floats.get(i);
             values.add(new Entry(i, val));
         }
 
