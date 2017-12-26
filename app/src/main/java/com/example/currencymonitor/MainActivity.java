@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private EditText entryfield;
     private ArrayList<CurrencyData> list;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             holder.textView.setText(String.valueOf(val));
             holder.mImageView.setImageResource(res);
         }
-//
+
         @Override
         public int getItemCount() {
             return list.size();

@@ -33,7 +33,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ChartFragment extends Fragment implements OnChartGestureListener{
+//    private static final String FLOAT_DATA = "data";
     private LineChart mChart;
+
+//    public static ChartFragment newInstance(double[] chartdata) {
+//        Bundle args = new Bundle();
+//        args.putDoubleArray(FLOAT_DATA, chartdata);
+//        ChartFragment fragment = new ChartFragment();
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
 
     @Nullable
     @Override
@@ -69,7 +78,7 @@ public class ChartFragment extends Fragment implements OnChartGestureListener{
         leftAxis.setDrawLimitLinesBehindData(true);
 
         mChart.getAxisRight().setEnabled(false);
-        setData(20, 100);
+        setData();
         mChart.animateX(2500);
         Legend l = mChart.getLegend();
 
@@ -90,7 +99,7 @@ public class ChartFragment extends Fragment implements OnChartGestureListener{
 //        super.onWindowFocusChanged(hasFocus);
 //    }
 
-    private void setData(int count, float range) {
+    private void setData() {
 
         ArrayList<Entry> values = new ArrayList<Entry>();
         ArrayList<Float> var = new ArrayList<>(Arrays.asList(new Float[]{1.5221f, 1.5207f, 1.5185f, 1.507f}));

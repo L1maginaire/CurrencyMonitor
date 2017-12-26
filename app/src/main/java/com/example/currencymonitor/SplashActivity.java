@@ -56,7 +56,8 @@ public class SplashActivity extends AppCompatActivity {
         if (dbExists(mDb))
             mDb.delete(TABLE_NAME, null, null);
         if (!isOnline()) {
-            Toast.makeText(this, "Check you Internet connection!", Toast.LENGTH_LONG).show(); //todo: broadcast
+            Toast.makeText(this, "Check your Internet connection!", Toast.LENGTH_LONG).show(); //todo: broadcast
+            this.finish();
             return;
         }
 //        String[] sequence = new String[]{"EUR", "USD", "JPY", "GBP", "CHF", "AUD", "CAD", "SEK"}; //todo mainthread
@@ -87,7 +88,7 @@ public class SplashActivity extends AppCompatActivity {
         );
     }
 
-    public boolean dbExists(SQLiteDatabase mDb) {
+    private boolean dbExists(SQLiteDatabase mDb) {
         Cursor cursor = mDb.query(TABLE_NAME, null, null, null, null, null, null);
         if (cursor.getCount() > 0) {
             cursor.close();
@@ -114,7 +115,7 @@ public class SplashActivity extends AppCompatActivity {
         Log.d(TAG, "dBinsert: "+String.valueOf(l));
     }
 
-    public boolean isOnline() {
+    private boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
