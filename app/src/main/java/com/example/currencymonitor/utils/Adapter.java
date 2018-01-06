@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.currencymonitor.CurrencyData;
+import com.example.currencymonitor.data.CurrencyData;
 import com.example.currencymonitor.R;
 
 import java.util.ArrayList;

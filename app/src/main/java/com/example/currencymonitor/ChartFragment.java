@@ -1,6 +1,5 @@
 package com.example.currencymonitor;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.drawable.Drawable;
@@ -17,7 +16,9 @@ import android.view.ViewGroup;
 
 import com.example.currencymonitor.data.FixerAPI;
 import com.example.currencymonitor.data.MetaCurr;
-import com.example.currencymonitor.data.Rates;
+import com.example.currencymonitor.di.components.CurrencyComponent;
+import com.example.currencymonitor.di.components.DaggerCurrencyComponent;
+import com.example.currencymonitor.di.modules.ContextModule;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.Legend.LegendForm;
@@ -105,7 +106,10 @@ public class ChartFragment extends Fragment implements OnChartGestureListener{
     }
 
     private void requestRX() {
-        FixerAPI fixerAPI = App.getApi();
+        CurrencyComponent daggerRandomUserComponent = DaggerCurrencyComponent.builder()
+                .contextModule(new ContextModule(getContext()))
+                .build();
+        FixerAPI fixerAPI = daggerRandomUserComponent.getCurrencyService(); //todo : from MAIN
 
         ArrayList <Single<MetaCurr>> arrayList = new ArrayList();
         arrayList.add(fixerAPI.statistics("2017-12-22"));

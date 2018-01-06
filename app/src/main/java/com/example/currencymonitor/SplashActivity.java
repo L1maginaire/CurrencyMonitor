@@ -66,7 +66,7 @@ public class SplashActivity extends AppCompatActivity {
         CurrencyComponent daggerRandomUserComponent = DaggerCurrencyComponent.builder()
                 .contextModule(new ContextModule(this))
                 .build();
-        fixerAPI = daggerRandomUserComponent.getUserService();
+        fixerAPI = daggerRandomUserComponent.getCurrencyService();
 //        String[] sequence = new String[]{"EUR", "USD", "JPY", "GBP", "CHF", "AUD", "CAD", "SEK"}; //todo mainthread
             requestRX("EUR");
     }

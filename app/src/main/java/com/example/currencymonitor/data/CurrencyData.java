@@ -1,4 +1,4 @@
-package com.example.currencymonitor;
+package com.example.currencymonitor.data;
 
 public class CurrencyData {
     public int pic;

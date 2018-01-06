@@ -1,6 +1,5 @@
 package com.example.currencymonitor;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -12,24 +11,20 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.currencymonitor.data.db.CurrencyDBHelper;
 import com.example.currencymonitor.utils.Adapter;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.TABLE_NAME;
+import com.example.currencymonitor.data.CurrencyData;
+
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private SQLiteDatabase mDb;

@@ -13,5 +13,5 @@ import com.example.currencymonitor.data.FixerAPI;
 @Component(modules = {CurrencyModule.class})
 public interface CurrencyComponent {
 
-    FixerAPI getUserService();
+    FixerAPI getCurrencyService();
 }
