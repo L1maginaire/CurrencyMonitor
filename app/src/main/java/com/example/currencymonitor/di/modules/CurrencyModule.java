@@ -29,10 +29,10 @@ public class CurrencyModule {
     public Retrofit retrofit(OkHttpClient okHttpClient,
                              GsonConverterFactory gsonConverterFactory, Gson gson){
         return new Retrofit.Builder()
-                .baseUrl("http://gitlab.65apps.com/")
+                .baseUrl("https://api.fixer.io/")
                 .client(okHttpClient)
                 .addConverterFactory(gsonConverterFactory)
-//                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
     }
 

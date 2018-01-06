@@ -123,8 +123,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
             for (int i = 1; i < c.getColumnCount(); i++) {
                 CurrencyData data = new CurrencyData();
-                data.setCoefficient((c.getDouble(i)) == 0.0 ? 1.0 : c.getDouble(i));
-                data.setValue(c.getDouble(i) * 1/*//todo*/);
+                double var = c.getDouble(i);
+                if (var == 0.0)
+                    continue;
+                data.setCoefficient(var);
+                data.setValue(var * 1/*//todo*/);
                 data.setPic(myImageList[i - 1]);
                 list.add(data);
             }

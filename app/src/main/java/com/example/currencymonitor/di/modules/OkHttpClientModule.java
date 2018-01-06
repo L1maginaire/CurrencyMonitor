@@ -10,6 +10,7 @@ import android.util.Log;
 import com.example.currencymonitor.interfaces.ApplicationScope;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
 
@@ -26,6 +27,9 @@ public class OkHttpClientModule {
     public OkHttpClient okHttpClient(Cache cache, HttpLoggingInterceptor httpLoggingInterceptor) {
         return new OkHttpClient()
                 .newBuilder()
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
                 .cache(cache)
                 .addInterceptor(httpLoggingInterceptor)
                 .build();
