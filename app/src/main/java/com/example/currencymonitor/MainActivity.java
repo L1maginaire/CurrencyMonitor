@@ -118,12 +118,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
             @Override
             public void afterTextChanged(Editable s) {
-                double coef = Double.valueOf(s.toString());
+                String number = s.toString();
+                if (number == ""||number.isEmpty())
+                    number = "0.0";
+                double coef = Double.valueOf(number);
                 for (CurrencyData c : list) {
-                    c.setValue(coef);
+                    c.setValue(c.getPrimaryRate() * coef);
                 }
-                entryfield.clearFocus();//todo: ?
-//                mAdapter.notifyDataSetChanged();
+                mAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -174,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 double var = c.getDouble(i);
                 if (var == 0.0)
                     continue;
-                data.setCoefficient(var);
+                data.setPrimaryRate(var);
                 data.setValue(var * 1/*//todo*/);
                 data.setPic(myImageList[i - 1]);
                 list.add(data);
@@ -203,30 +205,30 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private void requestRX(final String currecy) {
         mCompositeDisposable.add(fixerAPI.getData(currecy)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Function<MetaCurr, Rates>() {
-                    @Override
-                    public Rates apply(
-                            @NonNull final MetaCurr data)
-                            throws Exception {
-                        return data.getRates();
-                    }
-                })
-                .subscribe(new Consumer<Rates>() {
-                    @Override
-                    public void accept(
-                            @NonNull final Rates rates)
-                            throws Exception {
-                        dBinsert(rates, currecy);
-                        last_update.setText("Last update: " + android.text.format.DateFormat.format("dd-yyyy-MM hh:mm",
-                                mLastUpdateTime));
-                        setupAdapter();
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(new Function<MetaCurr, Rates>() {
+                            @Override
+                            public Rates apply(
+                                    @NonNull final MetaCurr data)
+                                    throws Exception {
+                                return data.getRates();
+                            }
+                        })
+                        .subscribe(new Consumer<Rates>() {
+                            @Override
+                            public void accept(
+                                    @NonNull final Rates rates)
+                                    throws Exception {
+                                dBinsert(rates, currecy);
+                                last_update.setText("Last update: " + android.text.format.DateFormat.format("dd-yyyy-MM hh:mm",
+                                        mLastUpdateTime));
 //                        setupSharedPreferences();
-                        Cursor cursor = mDb.query(TABLE_NAME, null, null, null, null, null, null);
-                        bindData(cursor);
-                    }
-                })
+                                Cursor cursor = mDb.query(TABLE_NAME, null, null, null, null, null, null);
+                                bindData(cursor);
+                                setupAdapter();
+                            }
+                        })
         );
     }
 
