@@ -3,6 +3,7 @@ package com.example.currencymonitor.data;
 // Fixer API:
 // http://fixer.io
 
+import java.io.Serializable;
 import java.util.List;
 
 import io.reactivex.Single;
@@ -11,7 +12,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface FixerAPI {
+public interface FixerAPI /*extends Serializable */{
     @GET("latest")
     Single<MetaCurr> getData(@Query("base") String baseCurrency);
 

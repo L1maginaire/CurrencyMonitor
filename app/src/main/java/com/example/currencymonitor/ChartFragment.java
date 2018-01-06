@@ -46,13 +46,13 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class ChartFragment extends Fragment implements OnChartGestureListener{
-//    private static final String FLOAT_DATA = "data";
+    private static final String API_DATA = "api";
     private LineChart mChart;
     private ArrayList<Float> floats = new ArrayList<>();
 
-//    public static ChartFragment newInstance(double[] chartdata) {
+//    public static ChartFragment newInstance(FixerAPI api) {
 //        Bundle args = new Bundle();
-//        args.putDoubleArray(FLOAT_DATA, chartdata);
+//        args.putSerializable(API_DATA, api);
 //        ChartFragment fragment = new ChartFragment();
 //        fragment.setArguments(args);
 //        return fragment;
