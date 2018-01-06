@@ -23,7 +23,6 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
@@ -50,19 +49,23 @@ import io.reactivex.schedulers.Schedulers;
 public class MultiChartFragment extends Fragment {
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private ArrayList<Float> floats = new ArrayList<>();
+    ArrayList<BarData> listt = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.listview_chart, container, false);
 
-        ArrayList<BarData> list = new ArrayList<>();
         daysSequence();
-        for (int i = 0; i < 10; i++) {
-            list.add(generateData());
-        }
+//            listt.add(generateData("EUR"));
+//            listt.add(generateData("AUD"));
+//            listt.add(generateData("CAD"));
+//            listt.add(generateData("SEK"));
+//            listt.add(generateData("JPY"));
+//            listt.add(generateData("USD"));
+//            listt.add(generateData("GBP"));
 
-        ChartDataAdapter cda = new ChartDataAdapter(getActivity().getApplicationContext(), list);
+        ChartDataAdapter cda = new ChartDataAdapter(getActivity().getApplicationContext(), listt);
         ListView lv = (ListView) v.findViewById(R.id.listView1);
         lv.setAdapter(cda);
 
@@ -134,8 +137,8 @@ public class MultiChartFragment extends Fragment {
 //            entries.add(new BarEntry(i, val));
 //        }
 
-        for (int i = 0; i < 12; i++) {
-            entries.add(new BarEntry(i, (float) (Math.random() * 70) + 30));
+        for (int i = 0; i < floats.size(); i++) {
+            entries.add(new BarEntry(i, (float) floats.get(i)));
         }
 
         BarDataSet d = new BarDataSet(entries, "New DataSet ");
@@ -184,7 +187,7 @@ public class MultiChartFragment extends Fragment {
                             Float f=(float)d;
                             floats.add(f);
                         }
-                        generateData();
+                        listt.add(generateData());
                     }
                 })
         );
