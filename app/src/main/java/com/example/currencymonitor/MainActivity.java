@@ -32,6 +32,7 @@ import com.example.currencymonitor.di.components.DaggerCurrencyComponent;
 import com.example.currencymonitor.di.modules.ContextModule;
 import com.example.currencymonitor.utils.Adapter;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
@@ -123,7 +124,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     number = "0.0";
                 double coef = Double.valueOf(number);
                 for (CurrencyData c : list) {
-                    c.setValue(c.getPrimaryRate() * coef);
+                    DecimalFormat df = new DecimalFormat("#.####");
+                    double value = Double.valueOf(df.format(c.getPrimaryRate() * coef));
+                    c.setValue(value);
                 }
                 mAdapter.notifyDataSetChanged();
             }
@@ -164,20 +167,21 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    private void bindData(Cursor c) {
-        if (c == null || !c.moveToFirst()) {
+    private void bindData() {
+        Cursor cursor = mDb.query(TABLE_NAME, null, null, null, null, null, null);
+        if (cursor == null || !cursor.moveToFirst()) {
             return;
         } else {
-            int[] myImageList = new int[]{R.drawable.european_union, R.drawable.united_states, R.drawable.japan, R.drawable.united_kingdom, R.drawable.switzerland,
-                    R.drawable.australia, R.drawable.canada, R.drawable.sweden};
+            int[] myImageList = new int[]{R.drawable.european_union, R.drawable.united_states, R.drawable.japan,
+                    R.drawable.united_kingdom, R.drawable.switzerland, R.drawable.australia, R.drawable.canada, R.drawable.sweden};
 
-            for (int i = 1; i < c.getColumnCount(); i++) {
+            for (int i = 1; i < cursor.getColumnCount(); i++) {
                 CurrencyData data = new CurrencyData();
-                double var = c.getDouble(i);
+                double var = cursor.getDouble(i);
                 if (var == 0.0)
                     continue;
                 data.setPrimaryRate(var);
-                data.setValue(var * 1/*//todo*/);
+                data.setValue(var);
                 data.setPic(myImageList[i - 1]);
                 list.add(data);
             }
@@ -224,8 +228,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                                 last_update.setText("Last update: " + android.text.format.DateFormat.format("dd-yyyy-MM hh:mm",
                                         mLastUpdateTime));
 //                        setupSharedPreferences();
-                                Cursor cursor = mDb.query(TABLE_NAME, null, null, null, null, null, null);
-                                bindData(cursor);
+                                bindData();
                                 setupAdapter();
                             }
                         })
