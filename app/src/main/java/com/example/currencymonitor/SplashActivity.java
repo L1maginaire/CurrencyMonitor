@@ -17,6 +17,9 @@ import com.example.currencymonitor.data.FixerAPI;
 import com.example.currencymonitor.data.MetaCurr;
 import com.example.currencymonitor.data.Rates;
 import com.example.currencymonitor.data.db.CurrencyDBHelper;
+import com.example.currencymonitor.di.components.CurrencyComponent;
+import com.example.currencymonitor.di.components.DaggerCurrencyComponent;
+import com.example.currencymonitor.di.modules.ContextModule;
 
 import java.util.GregorianCalendar;
 
@@ -51,15 +54,19 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dbHelper = new CurrencyDBHelper(SplashActivity.this);
-        fixerAPI = App.getApi();
         mDb = dbHelper.getWritableDatabase();
         if (dbExists(mDb))
             mDb.delete(TABLE_NAME, null, null);
         if (!isOnline()) {
-            Toast.makeText(this, "Check your Internet connection!", Toast.LENGTH_LONG).show(); //todo: broadcast
+            Toast.makeText(this, "Please, check your Internet connection.", Toast.LENGTH_LONG).show(); //todo: broadcast
             this.finish();
             return;
         }
+
+        CurrencyComponent daggerRandomUserComponent = DaggerCurrencyComponent.builder()
+                .contextModule(new ContextModule(this))
+                .build();
+        fixerAPI = daggerRandomUserComponent.getUserService();
 //        String[] sequence = new String[]{"EUR", "USD", "JPY", "GBP", "CHF", "AUD", "CAD", "SEK"}; //todo mainthread
             requestRX("EUR");
     }
