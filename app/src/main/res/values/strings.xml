@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">CurrencyMonitor</string>
     <string name="settings">Settings</string>
+    <string name="chart">Chart</string>
     <string name="pref_eur">EUR</string>
     <string name="pref_show_eur" translatable="false">show_eur</string>
     <string name="pref_usd">USD</string>
