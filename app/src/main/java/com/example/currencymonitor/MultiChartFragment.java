@@ -48,25 +48,19 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MultiChartFragment extends Fragment {
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private ArrayList<Float> floats = new ArrayList<>();
     ArrayList<BarData> listt = new ArrayList<>();
+    ArrayList<Float> floats;
+    CompositeDisposable mCompositeDisposable;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.listview_chart, container, false);
 
-        daysSequence();
-//            listt.add(generateData("EUR"));
-//            listt.add(generateData("AUD"));
-//            listt.add(generateData("CAD"));
-//            listt.add(generateData("SEK"));
-//            listt.add(generateData("JPY"));
-//            listt.add(generateData("USD"));
-//            listt.add(generateData("GBP"));
+        daysSequence("USD");
 
         ChartDataAdapter cda = new ChartDataAdapter(getActivity().getApplicationContext(), listt);
-        ListView lv = (ListView) v.findViewById(R.id.listView1);
+        ListView lv = (ListView) v.findViewById(R.id.chartView);
         lv.setAdapter(cda);
 
         return v;
@@ -82,23 +76,16 @@ public class MultiChartFragment extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
 
             BarData data = getItem(position);
-
             ViewHolder holder = null;
-
             if (convertView == null) {
-
                 holder = new ViewHolder();
-
                 convertView = LayoutInflater.from(getContext()).inflate(
                         R.layout.list_item_barchart, null);
                 holder.chart = (BarChart) convertView.findViewById(R.id.chart);
-
                 convertView.setTag(holder);
-
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-
             data.setValueTextColor(Color.BLACK);
             holder.chart.getDescription().setEnabled(false);
             holder.chart.setDrawGridBackground(false);
@@ -123,19 +110,12 @@ public class MultiChartFragment extends Fragment {
         }
 
         private class ViewHolder {
-
             BarChart chart;
         }
     }
 
     private BarData generateData() {
-
         ArrayList<BarEntry> entries = new ArrayList<>();
-
-//        for (int i = 0; i < floats.size(); i++) {
-//            float val = floats.get(i);
-//            entries.add(new BarEntry(i, val));
-//        }
 
         for (int i = 0; i < floats.size(); i++) {
             entries.add(new BarEntry(i, (float) floats.get(i)));
@@ -153,7 +133,7 @@ public class MultiChartFragment extends Fragment {
         return cd;
     }
 
-    private void daysSequence() {
+    private void daysSequence(String base) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         ArrayList<Single<MetaCurr>> dataList = new ArrayList();
@@ -165,8 +145,8 @@ public class MultiChartFragment extends Fragment {
         FixerAPI fixerAPI = daggerRandomUserComponent.getCurrencyService();
 
         for (int i = 0; i < 10; i++) {
-            Date result = calendar.getTime();
-            dataList.add(fixerAPI.statistics(sdf.format(result)));
+            Date result = calendar.getTime();// todo отдельный метод
+            dataList.add(fixerAPI.statistics(sdf.format(result), base));
             calendar.add(Calendar.DATE, -1);
         }
 
@@ -174,7 +154,7 @@ public class MultiChartFragment extends Fragment {
 
         Single<List<MetaCurr>> n = Single.merge(dataList).buffer(Integer.MAX_VALUE).single(emptyList);
 
-        CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+        mCompositeDisposable = new CompositeDisposable();
 
         mCompositeDisposable.add(n
                 .subscribeOn(Schedulers.io())
@@ -182,6 +162,8 @@ public class MultiChartFragment extends Fragment {
                 .subscribe(new Consumer<List<MetaCurr>>() {
                     @Override
                     public void accept(@NonNull final List<MetaCurr> list) throws Exception {
+                        floats = new ArrayList<>();
+
                         for (MetaCurr m:list) {
                             double d = m.getRates().getAUD();
                             Float f=(float)d;
@@ -191,6 +173,5 @@ public class MultiChartFragment extends Fragment {
                     }
                 })
         );
-
     }
 }

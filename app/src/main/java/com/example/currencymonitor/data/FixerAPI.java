@@ -17,5 +17,5 @@ public interface FixerAPI /*extends Serializable */{
     Single<MetaCurr> getData(@Query("base") String baseCurrency);
 
     @GET("{date}")
-    Single<MetaCurr> statistics(@Path("date")String date);
+    Single<MetaCurr> statistics(@Path("date")String date, @Query("base")String base);
 }
