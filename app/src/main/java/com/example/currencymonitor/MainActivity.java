@@ -122,10 +122,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 String number = s.toString();
                 if (number == ""||number.isEmpty())
                     number = "0.0";
-                double coef = Double.valueOf(number);
+                float coef = Float.valueOf(number);
                 for (CurrencyData c : list) {
-                    DecimalFormat df = new DecimalFormat("#.####");
-                    double value = Double.valueOf(df.format(c.getPrimaryRate() * coef));
+                    DecimalFormat df = new DecimalFormat("#.####"); //todo?
+                    float value = Float.valueOf(df.format(c.getPrimaryRate() * coef));
                     c.setValue(value);
                 }
                 mAdapter.notifyDataSetChanged();
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
             for (int i = 1; i < cursor.getColumnCount(); i++) {
                 CurrencyData data = new CurrencyData();
-                double var = cursor.getDouble(i);
+                float var = cursor.getFloat(i);
                 if (var == 0.0)
                     continue;
                 data.setPrimaryRate(var);

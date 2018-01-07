@@ -39,7 +39,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
     public void onBindViewHolder(Holder holder, final int position) {
         if (list == null || list.size() == 0)
             return;
-        double val = (Double) list.get(position).getValue();
+        float val = (float) list.get(position).getValue();
         int res = (Integer) list.get(position).getPic();
         holder.textView.setText(String.valueOf(val));
         holder.mImageView.setImageResource(res);
@@ -63,7 +63,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
 
         @Override
         public void onClick(View v) {
-
+            //todo: chart
         }
     }
 }

@@ -20,14 +20,14 @@ public class CurrencyDBHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_WEATHER_TABLE =
                 "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                         CurrencyContract.Entry.CURRENCY         + " STRING NOT NULL, " +
-                        CurrencyContract.Entry.COLUMN_EUR       + " DOUBLE, " +
-                        CurrencyContract.Entry.COLUMN_USD       + " DOUBLE, " +
-                        CurrencyContract.Entry.COLUMN_JPY       + " DOUBLE, " +
-                        CurrencyContract.Entry.COLUMN_GBP       + " DOUBLE, " +
-                        CurrencyContract.Entry.COLUMN_CHF       + " DOUBLE, " +
-                        CurrencyContract.Entry.COLUMN_AUD       + " DOUBLE, " +
-                        CurrencyContract.Entry.COLUMN_CAD       + " DOUBLE, " +
-                        CurrencyContract.Entry.COLUMN_SEK       + " DOUBLE" +
+                        CurrencyContract.Entry.COLUMN_EUR       + " FLOAT, " +
+                        CurrencyContract.Entry.COLUMN_USD       + " FLOAT, " +
+                        CurrencyContract.Entry.COLUMN_JPY       + " FLOAT, " +
+                        CurrencyContract.Entry.COLUMN_GBP       + " FLOAT, " +
+                        CurrencyContract.Entry.COLUMN_CHF       + " FLOAT, " +
+                        CurrencyContract.Entry.COLUMN_AUD       + " FLOAT, " +
+                        CurrencyContract.Entry.COLUMN_CAD       + " FLOAT, " +
+                        CurrencyContract.Entry.COLUMN_SEK       + " FLOAT" +
                         "); ";
         db.execSQL(SQL_CREATE_WEATHER_TABLE);
     }

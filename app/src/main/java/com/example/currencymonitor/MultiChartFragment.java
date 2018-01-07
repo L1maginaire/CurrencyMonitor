@@ -165,8 +165,7 @@ public class MultiChartFragment extends Fragment {
                         floats = new ArrayList<>();
 
                         for (MetaCurr m:list) {
-                            double d = m.getRates().getAUD();
-                            Float f=(float)d;
+                            float f = m.getRates().getAUD();
                             floats.add(f);
                         }
                         listt.add(generateData());

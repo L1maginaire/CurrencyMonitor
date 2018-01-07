@@ -2,8 +2,8 @@ package com.example.currencymonitor.data;
 
 public class CurrencyData {
     public int pic;
-    public double primaryRate;
-    public double value;
+    public float primaryRate;
+    public float value;
 
     public int getPic() {
         return pic;
@@ -13,19 +13,19 @@ public class CurrencyData {
         this.pic = pic;
     }
 
-    public double getPrimaryRate() {
+    public float getPrimaryRate() {
         return primaryRate;
     }
 
-    public void setPrimaryRate(double primaryRate) {
+    public void setPrimaryRate(float primaryRate) {
         this.primaryRate = primaryRate;
     }
 
-    public double getValue() {
+    public float getValue() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(float value) {
         this.value = value;
     }
 }
