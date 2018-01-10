@@ -1,5 +1,7 @@
 package com.example.currencymonitor;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
@@ -11,6 +13,16 @@ import android.view.MenuItem;
  */
 
 public class ChartActivity extends AppCompatActivity {
+    private static final String CURRENCY_ID = "ID";
+    private static int test;
+
+    public static Intent newIntent(Context packageContext, int icon_id) {
+        Intent intent = new Intent(packageContext, ChartActivity.class);
+        intent.putExtra(CURRENCY_ID, icon_id);
+        test = icon_id;
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

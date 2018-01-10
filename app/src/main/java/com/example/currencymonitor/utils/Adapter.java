@@ -67,7 +67,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
         @Override
         public void onClick(View v) {
             //todo: chart
-            mContext.startActivity(new Intent(mContext, ChartActivity.class));
+            mContext.startActivity(ChartActivity.newIntent(mContext, mImageView.getId()));
         }
     }
 }

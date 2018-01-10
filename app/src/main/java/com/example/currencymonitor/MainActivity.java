@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
@@ -106,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 //        });
 
         entryfield = findViewById(R.id.entryfield);
+        entryfield.setRawInputType(Configuration.KEYBOARD_12KEY);
         entryfield.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -119,10 +121,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
             @Override
             public void afterTextChanged(Editable s) {
-                String number = s.toString();
-                if (number == ""||number.isEmpty())
-                    number = "0.0";
-                float coef = Float.valueOf(number);
+                float coef = 0f;
+                try {
+                    String number = s.toString();
+                    if (number == "" || number.isEmpty() || number == ".")
+                        number = "0.0";
+                    coef = Float.parseFloat(number);
+                } catch (NumberFormatException e) {
+                }
                 for (CurrencyData c : list) {
                     DecimalFormat df = new DecimalFormat("#.####"); //todo?
                     float value = Float.valueOf(df.format(c.getPrimaryRate() * coef));
