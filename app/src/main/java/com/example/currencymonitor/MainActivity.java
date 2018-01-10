@@ -20,6 +20,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -125,11 +127,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
             @Override
             public void afterTextChanged(Editable s) {
+                String number = s.toString();
                 float coef = 0f;
                 try {
-                    String number = s.toString();
-                    if (number == "" || number.isEmpty() || number == ".")
-                        number = "0.0";
                     coef = Float.parseFloat(number);
                 } catch (NumberFormatException e) {
                 }
