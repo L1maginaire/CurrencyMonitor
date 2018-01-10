@@ -60,6 +60,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private final static String TAG = MainActivity.class.getSimpleName();
+    private final static String KEY_INDEX = "index";
 
     private SQLiteDatabase mDb;
     private CurrencyDBHelper dbHelper;
@@ -75,9 +76,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        list = new ArrayList<>();
+
+        if (savedInstanceState != null) {
+            list = (ArrayList<CurrencyData>) savedInstanceState.getSerializable(KEY_INDEX);
+        }
         setContentView(R.layout.activity_main);
         last_update = findViewById(R.id.last_update_date);
-        list = new ArrayList<>();
 
         dbHelper = new CurrencyDBHelper(MainActivity.this);
         mDb = dbHelper.getWritableDatabase();
@@ -116,7 +121,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
@@ -134,9 +138,16 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     float value = Float.valueOf(df.format(c.getPrimaryRate() * coef));
                     c.setValue(value);
                 }
-                mAdapter.notifyDataSetChanged();
+                if (mAdapter != null)
+                    mAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(KEY_INDEX, list);
     }
 
     private void setupAdapter() {
