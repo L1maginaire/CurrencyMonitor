@@ -1,9 +1,10 @@
 package com.example.currencymonitor.data;
 
-public class CurrencyData {
-    public int pic;
-    public float primaryRate;
-    public float value;
+public class CurrencyData implements java.io.Serializable{
+    private int pic;
+    private float primaryRate;
+    private float value;
+    private String tag;
 
     public int getPic() {
         return pic;
@@ -27,5 +28,13 @@ public class CurrencyData {
 
     public void setValue(float value) {
         this.value = value;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }

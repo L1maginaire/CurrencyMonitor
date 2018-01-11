@@ -197,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 data.setPrimaryRate(var);
                 data.setValue(var);
                 data.setPic(flags[i-1].getValue());
+                data.setTag(flags[i-1].toString());
                 list.add(data);
             }
         }

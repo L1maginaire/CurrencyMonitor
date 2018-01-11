@@ -14,6 +14,7 @@ import com.example.currencymonitor.ChartActivity;
 import com.example.currencymonitor.MainActivity;
 import com.example.currencymonitor.data.CurrencyData;
 import com.example.currencymonitor.R;
+import com.example.currencymonitor.data.db.CurrencyContract;
 
 import java.util.ArrayList;
 
@@ -44,9 +45,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
             return;
         float val = (float) list.get(position).getValue();
         int res = (Integer) list.get(position).getPic();
+        String tag = (String) list.get(position).getTag();
         holder.textView.setText(String.valueOf(val));
         holder.mImageView.setImageResource(res);
-        holder.mImageView.setTag(res);
+        holder.mImageView.setTag(tag);
     }
 
     @Override
@@ -67,9 +69,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
 
         @Override
         public void onClick(View v) {
-            //todo: chart
-            Intent intent = new Intent(mContext, ChartActivity.class);
-            intent.putExtra("DATA", (Integer) mImageView.getTag());
+            Intent intent = ChartActivity.newIntent(mContext, (String) mImageView.getTag());
             mContext.startActivity(intent);
 //            mContext.startActivity(ChartActivity.newIntent(mContext, mImageView.getId()));
         }

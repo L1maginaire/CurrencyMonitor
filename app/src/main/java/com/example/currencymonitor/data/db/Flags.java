@@ -24,8 +24,4 @@ public enum Flags {
     public int getValue(){
         return value;
     }
-
-//    public static int[] flags = new int[]{R.drawable.european_union, R.drawable.united_states, R.drawable.japan,
-//            R.drawable.united_kingdom, R.drawable.switzerland, R.drawable.australia, R.drawable.canada, R.drawable.sweden};
-
 }
