@@ -14,6 +14,7 @@ import android.widget.ListView;
 
 import com.example.currencymonitor.data.FixerAPI;
 import com.example.currencymonitor.data.MetaCurr;
+import com.example.currencymonitor.data.db.Flags;
 import com.example.currencymonitor.di.components.CurrencyComponent;
 import com.example.currencymonitor.di.components.DaggerCurrencyComponent;
 import com.example.currencymonitor.di.modules.ContextModule;
@@ -56,6 +57,7 @@ public class MultiChartFragment extends Fragment {
     ArrayList<BarData> listt = new ArrayList<>();
     ArrayList<Float> floats;
     CompositeDisposable mCompositeDisposable;
+    List<Flags> currencies = Arrays.asList(Flags.values());
 
     @Nullable
     @Override
@@ -64,12 +66,16 @@ public class MultiChartFragment extends Fragment {
 
         Spinner spinnerF = (Spinner) v.findViewById(R.id.from);
         Spinner spinnerW = (Spinner) v.findViewById(R.id.where);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.spinner_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<Flags> adapter = new ArrayAdapter<>(getContext(),
+                R.layout.row, R.id.currencyspinner, currencies);
+        ArrayAdapter<Flags> adapter2 = new ArrayAdapter<>(getContext(),
+                R.layout.row, R.id.currencyspinner, currencies);
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+//                R.array.spinner_array, R.layout.row);
+//        adapter.setDropDownViewResource(R.layout.row);
 
         spinnerF.setAdapter(adapter);
-        spinnerW.setAdapter(adapter);
+        spinnerW.setAdapter(adapter2);
         spinnerW.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
