@@ -5,10 +5,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -19,6 +20,7 @@ import com.example.currencymonitor.di.components.CurrencyComponent;
 import com.example.currencymonitor.di.components.DaggerCurrencyComponent;
 import com.example.currencymonitor.di.modules.ContextModule;
 import com.example.currencymonitor.utils.CustomSpinnerAdapter;
+import com.example.currencymonitor.utils.OnItemSelectedListenerImplementation;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.XAxis.XAxisPosition;
@@ -28,26 +30,29 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.jakewharton.rxbinding.widget.RxAdapterView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 
 import android.support.v4.app.Fragment;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import rx.functions.Func2;
+
+import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
 /**
  * Created by l1maginaire on 1/6/18.
@@ -67,28 +72,25 @@ public class MultiChartFragment extends Fragment {
 
         Spinner spinnerF = (Spinner) v.findViewById(R.id.from);
         Spinner spinnerW = (Spinner) v.findViewById(R.id.where);
-//        ArrayAdapter<Flags> adapter = new ArrayAdapter<>(getContext(),
-//                R.layout.row, R.id.currencyspinner, currencies);
         ArrayAdapter<Flags> adapter = new CustomSpinnerAdapter(getContext(), R.layout.row, currencies);
-        ArrayAdapter<Flags> adapter2 = new ArrayAdapter<>(getContext(),
-                R.layout.row, R.id.currencyspinner, currencies);
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-//                R.array.spinner_array, R.layout.row);
-//        adapter.setDropDownViewResource(R.layout.row);
-
+//        ArrayAdapter<Flags> adapter2 = new ArrayAdapter<>(getContext(),
+//                R.layout.row, R.id.currencyspinner, currencies);
+        spinnerW.setAdapter(adapter);
+        spinnerW.setOnItemSelectedListener(new OnItemSelectedListenerImplementation(getContext()));
         spinnerF.setAdapter(adapter);
-        spinnerW.setAdapter(adapter2);
-        spinnerW.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
-                Toast.makeText(getContext(), "Position = " + position, Toast.LENGTH_SHORT).show();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0){}
-        });
+        spinnerW.setOnItemSelectedListener(new OnItemSelectedListenerImplementation(getContext()));
 
-        daysSequence("USD");
+        rx.Observable<Integer> obs1 = RxAdapterView.itemSelections(spinnerF);
+        rx.Observable<Integer> obs2 = RxAdapterView.itemSelections(spinnerW);
+        rx.Observable.combineLatest(obs1, obs2, (s, s2) -> {
+            com.example.currencymonitor.data.db.Pair pair = new com.example.currencymonitor.data.db.Pair(s, s2);
+            return pair;
+        })
+                .subscribeOn(mainThread())
+                .subscribe(pair -> {
+                    Log.v("spinner", pair.getX().toString());
+                    Log.v("spinner", pair.getY().toString());
+                });
 
         ChartDataAdapter cda = new ChartDataAdapter(getActivity().getApplicationContext(), listt);
         ListView lv = (ListView) v.findViewById(R.id.chartView);
