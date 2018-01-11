@@ -46,6 +46,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
         int res = (Integer) list.get(position).getPic();
         holder.textView.setText(String.valueOf(val));
         holder.mImageView.setImageResource(res);
+        holder.mImageView.setTag(res);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
         public void onClick(View v) {
             //todo: chart
             Intent intent = new Intent(mContext, ChartActivity.class);
-            intent.putExtra("DATA", mImageView.getId());
+            intent.putExtra("DATA", (Integer) mImageView.getTag());
             mContext.startActivity(intent);
 //            mContext.startActivity(ChartActivity.newIntent(mContext, mImageView.getId()));
         }

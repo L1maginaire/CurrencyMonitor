@@ -9,7 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.currencymonitor.data.db.Ids;
+import com.example.currencymonitor.data.db.Flags;
+
 
 /**
  * Created by l1maginaire on 1/7/18.
@@ -30,7 +31,8 @@ public class ChartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Integer data = getIntent().getIntExtra("DATA", 0);
-        if (data== Ids.flags[2])
+        String data2 = Flags.JPY.toString();
+        if (data== Flags.JPY.getValue())
             Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
         setContentView(R.layout.chart_activity);
         ActionBar actionBar = this.getSupportActionBar();
