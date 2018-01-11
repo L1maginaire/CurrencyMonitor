@@ -18,6 +18,7 @@ import com.example.currencymonitor.data.db.Flags;
 import com.example.currencymonitor.di.components.CurrencyComponent;
 import com.example.currencymonitor.di.components.DaggerCurrencyComponent;
 import com.example.currencymonitor.di.modules.ContextModule;
+import com.example.currencymonitor.utils.CustomSpinnerAdapter;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.XAxis.XAxisPosition;
@@ -66,8 +67,9 @@ public class MultiChartFragment extends Fragment {
 
         Spinner spinnerF = (Spinner) v.findViewById(R.id.from);
         Spinner spinnerW = (Spinner) v.findViewById(R.id.where);
-        ArrayAdapter<Flags> adapter = new ArrayAdapter<>(getContext(),
-                R.layout.row, R.id.currencyspinner, currencies);
+//        ArrayAdapter<Flags> adapter = new ArrayAdapter<>(getContext(),
+//                R.layout.row, R.id.currencyspinner, currencies);
+        ArrayAdapter<Flags> adapter = new CustomSpinnerAdapter(getContext(), R.layout.row, currencies);
         ArrayAdapter<Flags> adapter2 = new ArrayAdapter<>(getContext(),
                 R.layout.row, R.id.currencyspinner, currencies);
 //        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
