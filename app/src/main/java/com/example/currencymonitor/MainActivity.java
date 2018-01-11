@@ -30,6 +30,7 @@ import com.example.currencymonitor.data.FixerAPI;
 import com.example.currencymonitor.data.MetaCurr;
 import com.example.currencymonitor.data.Rates;
 import com.example.currencymonitor.data.db.CurrencyDBHelper;
+import com.example.currencymonitor.data.db.Ids;
 import com.example.currencymonitor.di.components.CurrencyComponent;
 import com.example.currencymonitor.di.components.DaggerCurrencyComponent;
 import com.example.currencymonitor.di.modules.ContextModule;
@@ -189,9 +190,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         if (cursor == null || !cursor.moveToFirst()) {
             return;
         } else {
-            int[] myImageList = new int[]{R.drawable.european_union, R.drawable.united_states, R.drawable.japan,
-                    R.drawable.united_kingdom, R.drawable.switzerland, R.drawable.australia, R.drawable.canada, R.drawable.sweden};
-
             for (int i = 1; i < cursor.getColumnCount(); i++) {
                 CurrencyData data = new CurrencyData();
                 float var = cursor.getFloat(i);
@@ -199,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     continue;
                 data.setPrimaryRate(var);
                 data.setValue(var);
-                data.setPic(myImageList[i - 1]);
+                data.setPic(Ids.flags[i - 1]);
                 list.add(data);
             }
         }
