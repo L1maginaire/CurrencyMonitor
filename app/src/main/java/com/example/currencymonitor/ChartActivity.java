@@ -17,6 +17,7 @@ import com.example.currencymonitor.di.components.CurrencyComponent;
 import com.example.currencymonitor.di.components.DaggerCurrencyComponent;
 import com.example.currencymonitor.di.modules.ContextModule;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.XAxis.XAxisPosition;
 import com.github.mikephil.charting.components.YAxis;
@@ -123,6 +124,9 @@ public class ChartActivity extends AppCompatActivity {
             holder.chart.setFitBars(true);
             holder.chart.animateY(700);
 
+            Legend legend = holder.chart.getLegend();
+            legend.setEnabled(false);
+
             return convertView;
         }
 
@@ -169,7 +173,7 @@ public class ChartActivity extends AppCompatActivity {
                     public void accept(@NonNull final List<MetaCurr> list) throws Exception {
                         floats = new ArrayList<>();
                         for (MetaCurr m:list) {
-                            float f = m.getRates().getAUD();
+                            float f = m.getRates().getEUR(); // куда
                             floats.add(f);
                         }
                         listt.add(generateData());
@@ -183,18 +187,38 @@ public class ChartActivity extends AppCompatActivity {
         ArrayList<BarEntry> entries = new ArrayList<>();
 
         for (int i = 0; i < floats.size(); i++) {
-            entries.add(new BarEntry(i, (float) floats.get(i)));
+            entries.add(new BarEntry(i, floats.get(i)));
         }
 
-        BarDataSet d = new BarDataSet(entries, "New DataSet ");
-        d.setColors(ColorTemplate.VORDIPLOM_COLORS);
-        d.setBarShadowColor(Color.rgb(203, 203, 203));
+        BarDataSet set1;
+        /*set1.setDrawIcons(false);
+        set1.setColor(Color.GREEN);
 
-        ArrayList<IBarDataSet> sets = new ArrayList<>();
-        sets.add(d);
+        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+        dataSets.add(set1);
 
-        BarData cd = new BarData(sets);
-        cd.setBarWidth(0.9f);
-        return cd;
+        BarData data = new BarData(dataSets);
+        data.setBarWidth(0.9f);*/
+
+
+        set1 = new BarDataSet(entries, "Data Set");
+        set1.setColors(ColorTemplate.VORDIPLOM_COLORS);
+        set1.setDrawValues(true);
+        set1.setDrawIcons(true);
+
+        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+        dataSets.add(set1);
+
+        BarData data = new BarData(dataSets);
+
+//        d.setColors(ColorTemplate.LIBERTY_COLORS);
+//        d.setBarShadowColor(Color.rgb(203, 203, 203));
+//
+//        ArrayList<IBarDataSet> sets = new ArrayList<>();
+//        sets.add(d);
+//
+//        BarData cd = new BarData(sets);
+//        cd.setBarWidth(0.9f);
+        return data;
     }
 }
