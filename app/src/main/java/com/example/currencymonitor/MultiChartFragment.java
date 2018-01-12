@@ -20,6 +20,7 @@ import com.example.currencymonitor.di.components.DaggerCurrencyComponent;
 import com.example.currencymonitor.di.modules.ContextModule;
 import com.example.currencymonitor.utils.CustomSpinnerAdapter;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.XAxis.XAxisPosition;
@@ -41,8 +42,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
 import java.util.List;
 
 import android.support.v4.app.Fragment;
@@ -66,6 +69,7 @@ public class MultiChartFragment extends Fragment {
     CompositeDisposable mCompositeDisposable;
     List<Flags> currencies = Arrays.asList(Flags.values());
     BarChart mChart;
+    private static List <String> dates10 = new LinkedList<>();
 
     @Nullable
     @Override
@@ -75,8 +79,6 @@ public class MultiChartFragment extends Fragment {
         Spinner spinnerF = (Spinner) v.findViewById(R.id.from);
         Spinner spinnerW = (Spinner) v.findViewById(R.id.where);
         ArrayAdapter<Flags> adapter = new CustomSpinnerAdapter(getContext(), R.layout.row, currencies);
-
-
 
         spinnerW.setAdapter(adapter);
         spinnerF.setAdapter(adapter);
@@ -126,6 +128,12 @@ public class MultiChartFragment extends Fragment {
             XAxis xAxis = holder.chart.getXAxis();
             xAxis.setPosition(XAxisPosition.BOTTOM);
             xAxis.setDrawGridLines(false);
+            xAxis.setValueFormatter(new IAxisValueFormatter() {
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+                    return dates10.get((int)value);
+                }
+            });
 
             YAxis leftAxis = holder.chart.getAxisLeft();
             leftAxis.setLabelCount(5, false);
@@ -140,11 +148,6 @@ public class MultiChartFragment extends Fragment {
             mChart.setFitBars(false);
             mChart.animateY(700);
 
-//        mv.setChartView(mChart); // For bounds control
-//        mChart.setMarker(mv); // Set the marker to the chart
-
-            IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(mChart);
-//            MyMarkerView mv = new MyMarkerView(getContext(), xAxisFormatter);
             MyMarkerView mv = new MyMarkerView(getContext(), R.layout.marker_view);
             mv.setChartView(mChart);
             mChart.setMarker(mv);
@@ -189,12 +192,13 @@ public class MultiChartFragment extends Fragment {
                 .contextModule(new ContextModule(getContext()))
                 .build();
         FixerAPI fixerAPI = daggerRandomUserComponent.getCurrencyService();
-
         for (int i = 0; i < 10; i++) {
             Date result = calendar.getTime();
+            dates10.add(new SimpleDateFormat("dd/MM").format(result));
             dataList.add(fixerAPI.statistics(sdf.format(result), base));
             calendar.add(Calendar.DATE, -1);
         }
+        Collections.reverse(dates10);
 
         ArrayList <MetaCurr> emptyList = new ArrayList<>();
 
