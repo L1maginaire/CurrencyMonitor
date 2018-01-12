@@ -19,7 +19,6 @@ import com.example.currencymonitor.di.components.CurrencyComponent;
 import com.example.currencymonitor.di.components.DaggerCurrencyComponent;
 import com.example.currencymonitor.di.modules.ContextModule;
 import com.example.currencymonitor.utils.CustomSpinnerAdapter;
-import com.example.currencymonitor.utils.OnItemSelectedListenerImplementation;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -77,9 +76,7 @@ public class MultiChartFragment extends Fragment {
         lv.setAdapter(cda);
 
         spinnerW.setAdapter(adapter);
-        spinnerW.setOnItemSelectedListener(new OnItemSelectedListenerImplementation(getContext()));
         spinnerF.setAdapter(adapter);
-        spinnerW.setOnItemSelectedListener(new OnItemSelectedListenerImplementation(getContext()));
 
         rx.Observable<Integer> obs1 = RxAdapterView.itemSelections(spinnerF);
         rx.Observable<Integer> obs2 = RxAdapterView.itemSelections(spinnerW);
