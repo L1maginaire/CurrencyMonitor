@@ -27,11 +27,15 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.jakewharton.rxbinding.widget.RxAdapterView;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,8 +60,7 @@ import static rx.android.schedulers.AndroidSchedulers.mainThread;
  */
 
 public class MultiChartFragment extends Fragment {
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    ArrayList<BarData> listt = new ArrayList<>();
+    ArrayList<BarData> barData = new ArrayList<>();
     ArrayList<Float> floats;
     CompositeDisposable mCompositeDisposable;
     List<Flags> currencies = Arrays.asList(Flags.values());
@@ -71,7 +74,7 @@ public class MultiChartFragment extends Fragment {
         Spinner spinnerW = (Spinner) v.findViewById(R.id.where);
         ArrayAdapter<Flags> adapter = new CustomSpinnerAdapter(getContext(), R.layout.row, currencies);
 
-        ChartDataAdapter cda = new ChartDataAdapter(getContext(), listt);
+        ChartDataAdapter cda = new ChartDataAdapter(getContext(), barData);
         ListView lv = (ListView) v.findViewById(R.id.chartView);
         lv.setAdapter(cda);
 
@@ -148,11 +151,12 @@ public class MultiChartFragment extends Fragment {
         ArrayList<BarEntry> entries = new ArrayList<>();
 
         for (int i = 0; i < floats.size(); i++) {
-            entries.add(new BarEntry(i, (float) floats.get(i)));
+            entries.add(new BarEntry(i, floats.get(i)));
         }
 
         BarDataSet d = new BarDataSet(entries, "Dates");
-        d.setColors(ColorTemplate.VORDIPLOM_COLORS);
+        d.setColor(Color.GRAY);
+        d.setValueFormatter((value, entry, dataSetIndex, viewPortHandler) -> new DecimalFormat("#.##").format(value));
         d.setBarShadowColor(Color.rgb(203, 203, 203));
 
         ArrayList<IBarDataSet> sets = new ArrayList<>();
@@ -164,7 +168,6 @@ public class MultiChartFragment extends Fragment {
     }
 
     private void daysSequence(String base) {
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         ArrayList<Single<MetaCurr>> dataList = new ArrayList();
         Calendar calendar = new GregorianCalendar();
@@ -198,7 +201,7 @@ public class MultiChartFragment extends Fragment {
                             float f = m.getRates().getAUD();
                             floats.add(f);
                         }
-                        listt.add(generateData());
+                        barData.add(generateData());
                     }
                 })
         );
