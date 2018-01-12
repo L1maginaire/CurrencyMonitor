@@ -64,25 +64,25 @@ public class MultiChartFragment extends Fragment {
     ArrayList<Float> floats;
     CompositeDisposable mCompositeDisposable;
     List<Flags> currencies = Arrays.asList(Flags.values());
+    BarChart mChart;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.listview_chart, container, false);
 
+
         Spinner spinnerF = (Spinner) v.findViewById(R.id.from);
         Spinner spinnerW = (Spinner) v.findViewById(R.id.where);
         ArrayAdapter<Flags> adapter = new CustomSpinnerAdapter(getContext(), R.layout.row, currencies);
 
-        ChartDataAdapter cda = new ChartDataAdapter(getContext(), barData);
-        ListView lv = (ListView) v.findViewById(R.id.chartView);
-        lv.setAdapter(cda);
+
 
         spinnerW.setAdapter(adapter);
         spinnerF.setAdapter(adapter);
 
-        rx.Observable<Integer> obs1 = RxAdapterView.itemSelections(spinnerF);
-        rx.Observable<Integer> obs2 = RxAdapterView.itemSelections(spinnerW);
+        rx.Observable<Integer> obs1 = RxAdapterView.itemSelections(spinnerF).skip(1);
+        rx.Observable<Integer> obs2 = RxAdapterView.itemSelections(spinnerW).skip(1); //todo
         rx.Observable.combineLatest(obs1, obs2, (s, s2) -> {
             com.example.currencymonitor.data.db.Pair pair = new com.example.currencymonitor.data.db.Pair(s, s2);
             return pair;
@@ -91,8 +91,11 @@ public class MultiChartFragment extends Fragment {
                 .subscribe(pair -> {
                     Log.v("spinner", pair.getX().toString());
                     Log.v("spinner", pair.getY().toString());
-                    daysSequence("USD");
                 });
+        daysSequence("USD");
+        ChartDataAdapter cda = new ChartDataAdapter(getContext(), barData);
+        ListView lv = (ListView) v.findViewById(R.id.chartView);
+        lv.setAdapter(cda);
         return v;
     }
 
@@ -112,6 +115,8 @@ public class MultiChartFragment extends Fragment {
                 convertView = LayoutInflater.from(getContext()).inflate(
                         R.layout.list_item_barchart, null);
                 holder.chart = (BarChart) convertView.findViewById(R.id.chart);
+                MyMarkerView mv = new MyMarkerView(getActivity(), R.layout.marker_view);
+                mv.setChartView(holder.chart);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -192,17 +197,14 @@ public class MultiChartFragment extends Fragment {
         mCompositeDisposable.add(n
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<MetaCurr>>() {
-                    @Override
-                    public void accept(@NonNull final List<MetaCurr> list) throws Exception {
-                        floats = new ArrayList<>();
+                .subscribe(list -> {
+                    floats = new ArrayList<>();
 
-                        for (MetaCurr m:list) {
-                            float f = m.getRates().getAUD();
-                            floats.add(f);
-                        }
-                        barData.add(generateData());
+                    for (MetaCurr m:list) {
+                        float f = m.getRates().getAUD();
+                        floats.add(f);
                     }
+                    barData.add(generateData());
                 })
         );
     }
