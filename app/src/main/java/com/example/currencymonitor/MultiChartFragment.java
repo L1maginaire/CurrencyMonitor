@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,7 @@ import com.example.currencymonitor.di.modules.ContextModule;
 import com.example.currencymonitor.utils.CustomSpinnerAdapter;
 import com.example.currencymonitor.utils.OnItemSelectedListenerImplementation;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.XAxis.XAxisPosition;
 import com.github.mikephil.charting.components.YAxis;
@@ -39,7 +39,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 
 import android.support.v4.app.Fragment;
@@ -50,7 +49,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import rx.functions.Func2;
 
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
@@ -73,8 +71,11 @@ public class MultiChartFragment extends Fragment {
         Spinner spinnerF = (Spinner) v.findViewById(R.id.from);
         Spinner spinnerW = (Spinner) v.findViewById(R.id.where);
         ArrayAdapter<Flags> adapter = new CustomSpinnerAdapter(getContext(), R.layout.row, currencies);
-//        ArrayAdapter<Flags> adapter2 = new ArrayAdapter<>(getContext(),
-//                R.layout.row, R.id.currencyspinner, currencies);
+
+        ChartDataAdapter cda = new ChartDataAdapter(getContext(), listt);
+        ListView lv = (ListView) v.findViewById(R.id.chartView);
+        lv.setAdapter(cda);
+
         spinnerW.setAdapter(adapter);
         spinnerW.setOnItemSelectedListener(new OnItemSelectedListenerImplementation(getContext()));
         spinnerF.setAdapter(adapter);
@@ -90,12 +91,8 @@ public class MultiChartFragment extends Fragment {
                 .subscribe(pair -> {
                     Log.v("spinner", pair.getX().toString());
                     Log.v("spinner", pair.getY().toString());
+                    daysSequence("USD");
                 });
-
-        ChartDataAdapter cda = new ChartDataAdapter(getActivity().getApplicationContext(), listt);
-        ListView lv = (ListView) v.findViewById(R.id.chartView);
-        lv.setAdapter(cda);
-
         return v;
     }
 
@@ -139,6 +136,9 @@ public class MultiChartFragment extends Fragment {
             holder.chart.setFitBars(true);
             holder.chart.animateY(700);
 
+            Legend legend = holder.chart.getLegend();
+            legend.setEnabled(false);
+
             return convertView;
         }
 
@@ -154,7 +154,7 @@ public class MultiChartFragment extends Fragment {
             entries.add(new BarEntry(i, (float) floats.get(i)));
         }
 
-        BarDataSet d = new BarDataSet(entries, "New DataSet ");
+        BarDataSet d = new BarDataSet(entries, "Dates");
         d.setColors(ColorTemplate.VORDIPLOM_COLORS);
         d.setBarShadowColor(Color.rgb(203, 203, 203));
 
@@ -178,7 +178,7 @@ public class MultiChartFragment extends Fragment {
         FixerAPI fixerAPI = daggerRandomUserComponent.getCurrencyService();
 
         for (int i = 0; i < 10; i++) {
-            Date result = calendar.getTime();// todo отдельный метод
+            Date result = calendar.getTime();
             dataList.add(fixerAPI.statistics(sdf.format(result), base));
             calendar.add(Calendar.DATE, -1);
         }
