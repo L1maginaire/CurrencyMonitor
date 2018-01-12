@@ -69,9 +69,9 @@ public class ChartFragment extends Fragment implements OnChartGestureListener{
         mChart.setScaleEnabled(true);
         mChart.setPinchZoom(true); //todo?
 
-        MyMarkerView mv = new MyMarkerView(getContext(), R.layout.marker_view);
-        mv.setChartView(mChart); // For bounds control
-        mChart.setMarker(mv); // Set the marker to the chart
+//        MyMarkerView mv = new MyMarkerView(getContext(), R.layout.marker_view);
+//        mv.setChartView(mChart); // For bounds control
+//        mChart.setMarker(mv); // Set the marker to the chart
 
         LimitLine llXAxis = new LimitLine(10f, "Index 10");
         llXAxis.setLineWidth(4f);

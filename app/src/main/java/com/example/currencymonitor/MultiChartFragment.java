@@ -28,6 +28,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -71,7 +72,6 @@ public class MultiChartFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.listview_chart, container, false);
 
-
         Spinner spinnerF = (Spinner) v.findViewById(R.id.from);
         Spinner spinnerW = (Spinner) v.findViewById(R.id.where);
         ArrayAdapter<Flags> adapter = new CustomSpinnerAdapter(getContext(), R.layout.row, currencies);
@@ -82,7 +82,7 @@ public class MultiChartFragment extends Fragment {
         spinnerF.setAdapter(adapter);
 
         rx.Observable<Integer> obs1 = RxAdapterView.itemSelections(spinnerF).skip(1);
-        rx.Observable<Integer> obs2 = RxAdapterView.itemSelections(spinnerW).skip(1); //todo
+        rx.Observable<Integer> obs2 = RxAdapterView.itemSelections(spinnerW).skip(1); //todo skipInitialValue
         rx.Observable.combineLatest(obs1, obs2, (s, s2) -> {
             com.example.currencymonitor.data.db.Pair pair = new com.example.currencymonitor.data.db.Pair(s, s2);
             return pair;
@@ -91,9 +91,9 @@ public class MultiChartFragment extends Fragment {
                 .subscribe(pair -> {
                     Log.v("spinner", pair.getX().toString());
                     Log.v("spinner", pair.getY().toString());
+                    daysSequence("USD");
                 });
-        daysSequence("USD");
-        ChartDataAdapter cda = new ChartDataAdapter(getContext(), barData);
+        ChartDataAdapter cda = new ChartDataAdapter(getContext(), barData); //todo убрать
         ListView lv = (ListView) v.findViewById(R.id.chartView);
         lv.setAdapter(cda);
         return v;
@@ -115,8 +115,6 @@ public class MultiChartFragment extends Fragment {
                 convertView = LayoutInflater.from(getContext()).inflate(
                         R.layout.list_item_barchart, null);
                 holder.chart = (BarChart) convertView.findViewById(R.id.chart);
-                MyMarkerView mv = new MyMarkerView(getActivity(), R.layout.marker_view);
-                mv.setChartView(holder.chart);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -137,9 +135,19 @@ public class MultiChartFragment extends Fragment {
             rightAxis.setLabelCount(5, false);
             rightAxis.setSpaceTop(15f);
 
-            holder.chart.setData(data);
-            holder.chart.setFitBars(true);
-            holder.chart.animateY(700);
+            BarChart mChart = holder.chart;
+            mChart.setData(data);
+            mChart.setFitBars(false);
+            mChart.animateY(700);
+
+//        mv.setChartView(mChart); // For bounds control
+//        mChart.setMarker(mv); // Set the marker to the chart
+
+            IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(mChart);
+//            MyMarkerView mv = new MyMarkerView(getContext(), xAxisFormatter);
+            MyMarkerView mv = new MyMarkerView(getContext(), R.layout.marker_view);
+            mv.setChartView(mChart);
+            mChart.setMarker(mv);
 
             Legend legend = holder.chart.getLegend();
             legend.setEnabled(false);
@@ -161,7 +169,7 @@ public class MultiChartFragment extends Fragment {
 
         BarDataSet d = new BarDataSet(entries, "Dates");
         d.setColor(Color.GRAY);
-        d.setValueFormatter((value, entry, dataSetIndex, viewPortHandler) -> new DecimalFormat("#.##").format(value));
+        d.setValueFormatter((value, entry, dataSetIndex, viewPortHandler) -> new DecimalFormat("#.###").format(value));
         d.setBarShadowColor(Color.rgb(203, 203, 203));
 
         ArrayList<IBarDataSet> sets = new ArrayList<>();
