@@ -121,7 +121,7 @@ public class MultiChartFragment extends Fragment {
                     Log.v("spinner", pair.getX().toString());
                     Log.v("spinner", pair.getY().toString());
                     daysSequence(pair.getX(), pair.getY());
-                    mChart.invalidate();
+//                    mChart.invalidate();
                 });
 
 
@@ -247,6 +247,8 @@ public class MultiChartFragment extends Fragment {
                         floats.add(choise(y, m));
                     }
                     mChart.setData(generateData(floats));
+                    mChart.notifyDataSetChanged();
+                    mChart.invalidate();
                 })
         );
     }
