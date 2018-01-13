@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.example.currencymonitor.data.FixerAPI;
@@ -77,6 +79,30 @@ public class MultiChartFragment extends Fragment {
         View v = inflater.inflate(R.layout.listview_chart, container, false);
         setRetainInstance(true); // to prevent hiding on changing orientation
 
+
+        mChart = (BarChart) v.findViewById(R.id.chartView);
+        mChart.getDescription().setEnabled(false);
+
+        MyMarkerView mv = new MyMarkerView(getContext(), R.layout.marker_view);
+        mv.setChartView(mChart);
+        mChart.setMarker(mv);
+
+        mChart.setDrawGridBackground(false); // ?!
+        mChart.setDrawBarShadow(false);
+
+        Legend legend = mChart.getLegend();
+        legend.setEnabled(false);
+
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setPosition(XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return dates10.get((int)value);
+            }
+        });
+
         Spinner spinnerF = (Spinner) v.findViewById(R.id.from);
         Spinner spinnerW = (Spinner) v.findViewById(R.id.where);
         ArrayAdapter<Flags> adapter = new CustomSpinnerAdapter(getContext(), R.layout.row, currencies);
@@ -94,11 +120,13 @@ public class MultiChartFragment extends Fragment {
                 .subscribe(pair -> {
                     Log.v("spinner", pair.getX().toString());
                     Log.v("spinner", pair.getY().toString());
-                    daysSequence("USD");
+                    daysSequence(pair.getX(), pair.getY());
+                    mChart.invalidate();
                 });
-        ChartDataAdapter cda = new ChartDataAdapter(getContext(), barData); //todo убрать
-        ListView lv = (ListView) v.findViewById(R.id.chartView);
-        lv.setAdapter(cda);
+
+
+//        LinearLayout parent = (LinearLayout) v.findViewById(R.id.chartView);
+//        parent.addView(mChart);
         return v;
     }
 
@@ -119,6 +147,7 @@ public class MultiChartFragment extends Fragment {
                         R.layout.list_item_barchart, null);
                 holder.chart = (BarChart) convertView.findViewById(R.id.chart);
                 convertView.setTag(holder);
+                mChart = holder.chart;
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
@@ -164,11 +193,11 @@ public class MultiChartFragment extends Fragment {
         }
     }
 
-    private BarData generateData() {
+    private BarData generateData(ArrayList<Float> list) {
         ArrayList<BarEntry> entries = new ArrayList<>();
 
-        for (int i = 0; i < floats.size(); i++) {
-            entries.add(new BarEntry(i, floats.get(i)));
+        for (int i = 0; i < list.size(); i++) {
+            entries.add(new BarEntry(i, list.get(i)));
         }
 
         BarDataSet d = new BarDataSet(entries, "Dates");
@@ -184,7 +213,8 @@ public class MultiChartFragment extends Fragment {
         return cd;
     }
 
-    private void daysSequence(String base) {
+    private void daysSequence(final int x, final int y) {
+        String base = currencies.get(x).toString();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         ArrayList<Single<MetaCurr>> dataList = new ArrayList();
         Calendar calendar = new GregorianCalendar();
@@ -214,11 +244,43 @@ public class MultiChartFragment extends Fragment {
                     floats = new ArrayList<>();
 
                     for (MetaCurr m:list) {
-                        float f = m.getRates().getAUD();
-                        floats.add(f);
+                        floats.add(choise(y, m));
                     }
-                    barData.add(generateData());
+                    mChart.setData(generateData(floats));
                 })
         );
+    }
+
+    float choise(int y, MetaCurr m){
+        Float f=0f;
+        switch (y){
+            case 0:
+                f = m.getRates().getEUR();
+                break;
+            case 1:
+                f = m.getRates().getUSD();
+                break;
+            case 2:
+                f = m.getRates().getJPY();
+                break;
+            case 3:
+                f = m.getRates().getGBP();
+                break;
+            case 4:
+                f = m.getRates().getCHF();
+                break;
+            case 5:
+                f = m.getRates().getAUD();
+                break;
+            case 6:
+                f = m.getRates().getCAD();
+                break;
+            case 7:
+                f = m.getRates().getSEK();
+                break;
+        }
+        if (f==null)
+            f = 0f;
+        return f;
     }
 }

@@ -27,7 +27,7 @@
             android:padding="10dp"/>
     </LinearLayout>
 
-    <ListView
+    <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/chartView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
