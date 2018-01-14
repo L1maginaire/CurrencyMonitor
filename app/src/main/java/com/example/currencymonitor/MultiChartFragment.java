@@ -77,8 +77,7 @@ public class MultiChartFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.listview_chart, container, false);
-        setRetainInstance(true); // to prevent hiding on changing orientation
-
+ //       setRetainInstance(true); // to prevent hiding on changing orientation
 
         mChart = (BarChart) v.findViewById(R.id.chartView);
         mChart.getDescription().setEnabled(false);
@@ -110,8 +109,8 @@ public class MultiChartFragment extends Fragment {
         spinnerW.setAdapter(adapter);
         spinnerF.setAdapter(adapter);
 
-        rx.Observable<Integer> obs1 = RxAdapterView.itemSelections(spinnerF).skip(1);
-        rx.Observable<Integer> obs2 = RxAdapterView.itemSelections(spinnerW).skip(1); //todo skipInitialValue
+        rx.Observable<Integer> obs1 = RxAdapterView.itemSelections(spinnerF);
+        rx.Observable<Integer> obs2 = RxAdapterView.itemSelections(spinnerW);
         rx.Observable.combineLatest(obs1, obs2, (s, s2) -> {
             com.example.currencymonitor.data.db.Pair pair = new com.example.currencymonitor.data.db.Pair(s, s2);
             return pair;
@@ -121,7 +120,6 @@ public class MultiChartFragment extends Fragment {
                     Log.v("spinner", pair.getX().toString());
                     Log.v("spinner", pair.getY().toString());
                     daysSequence(pair.getX(), pair.getY());
-//                    mChart.invalidate();
                 });
 
 
