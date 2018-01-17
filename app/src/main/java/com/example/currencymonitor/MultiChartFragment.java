@@ -92,15 +92,14 @@ public class MultiChartFragment extends Fragment {
         Legend legend = mChart.getLegend();
         legend.setEnabled(false);
 
+//        YAxis rightAxis = mChart.getAxisRight();
+//        rightAxis.setLabelCount(5, false);
+//        rightAxis.setSpaceTop(15f); // todo: necessity
+
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return dates10.get((int)value);
-            }
-        });
+        xAxis.setValueFormatter((value, axis) -> dates10.get((int)value));
 
         Spinner spinnerF = (Spinner) v.findViewById(R.id.from);
         Spinner spinnerW = (Spinner) v.findViewById(R.id.where);
@@ -126,69 +125,6 @@ public class MultiChartFragment extends Fragment {
 //        LinearLayout parent = (LinearLayout) v.findViewById(R.id.chartView);
 //        parent.addView(mChart);
         return v;
-    }
-
-    private class ChartDataAdapter extends ArrayAdapter<BarData> {
-
-        public ChartDataAdapter(Context context, List<BarData> objects) {
-            super(context, 0, objects);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            BarData data = getItem(position);
-            ViewHolder holder = null;
-            if (convertView == null) {
-                holder = new ViewHolder();
-                convertView = LayoutInflater.from(getContext()).inflate(
-                        R.layout.list_item_barchart, null);
-                holder.chart = (BarChart) convertView.findViewById(R.id.chart);
-                convertView.setTag(holder);
-                mChart = holder.chart;
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-            data.setValueTextColor(Color.BLACK);
-            holder.chart.getDescription().setEnabled(false);
-            holder.chart.setDrawGridBackground(false);
-
-            XAxis xAxis = holder.chart.getXAxis();
-            xAxis.setPosition(XAxisPosition.BOTTOM);
-            xAxis.setDrawGridLines(false);
-            xAxis.setValueFormatter(new IAxisValueFormatter() {
-                @Override
-                public String getFormattedValue(float value, AxisBase axis) {
-                    return dates10.get((int)value);
-                }
-            });
-
-            YAxis leftAxis = holder.chart.getAxisLeft();
-            leftAxis.setLabelCount(5, false);
-            leftAxis.setSpaceTop(15f);
-
-            YAxis rightAxis = holder.chart.getAxisRight();
-            rightAxis.setLabelCount(5, false);
-            rightAxis.setSpaceTop(15f);
-
-            BarChart mChart = holder.chart;
-            mChart.setData(data);
-            mChart.setFitBars(false);
-            mChart.animateY(700);
-
-            MyMarkerView mv = new MyMarkerView(getContext(), R.layout.marker_view);
-            mv.setChartView(mChart);
-            mChart.setMarker(mv);
-
-            Legend legend = holder.chart.getLegend();
-            legend.setEnabled(false);
-
-            return convertView;
-        }
-
-        private class ViewHolder {
-            BarChart chart;
-        }
     }
 
     private BarData generateData(ArrayList<Float> list) {
