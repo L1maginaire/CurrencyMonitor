@@ -1,4 +1,4 @@
-package com.example.currencymonitor;
+package com.example.currencymonitor.ui;
 
 /**
  * Created by l1maginaire on 12/23/17.
@@ -7,6 +7,7 @@ package com.example.currencymonitor;
 import android.content.Context;
 import android.widget.TextView;
 
+import com.example.currencymonitor.R;
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.CandleEntry;
 import com.github.mikephil.charting.data.Entry;

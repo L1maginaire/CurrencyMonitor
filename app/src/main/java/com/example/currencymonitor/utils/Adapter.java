@@ -1,7 +1,6 @@
 package com.example.currencymonitor.utils;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,11 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.currencymonitor.ChartActivity;
-import com.example.currencymonitor.MainActivity;
+import com.example.currencymonitor.ui.ChartActivity;
 import com.example.currencymonitor.data.CurrencyData;
 import com.example.currencymonitor.R;
-import com.example.currencymonitor.data.db.CurrencyContract;
 
 import java.util.ArrayList;
 

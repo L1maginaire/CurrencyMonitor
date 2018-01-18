@@ -1,4 +1,4 @@
-package com.example.currencymonitor;
+package com.example.currencymonitor.ui;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.currencymonitor.R;
 import com.example.currencymonitor.data.FixerAPI;
 import com.example.currencymonitor.data.MetaCurr;
 import com.example.currencymonitor.data.Rates;

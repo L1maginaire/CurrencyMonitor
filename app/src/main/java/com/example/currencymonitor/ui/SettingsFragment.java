@@ -1,6 +1,8 @@
-package com.example.currencymonitor;
+package com.example.currencymonitor.ui;
 
 import android.content.SharedPreferences;
+
+import com.example.currencymonitor.R;
 import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 import android.os.Bundle;
 import android.support.annotation.Nullable;

@@ -1,4 +1,4 @@
-package com.example.currencymonitor;
+package com.example.currencymonitor.ui;
 
 import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.components.AxisBase;

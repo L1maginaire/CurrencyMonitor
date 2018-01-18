@@ -1,4 +1,4 @@
-package com.example.currencymonitor;
+package com.example.currencymonitor.ui;
 
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.currencymonitor.R;
 import com.example.currencymonitor.data.FixerAPI;
 import com.example.currencymonitor.data.MetaCurr;
 import com.example.currencymonitor.di.components.CurrencyComponent;
@@ -111,15 +112,6 @@ public class ChartFragment extends Fragment implements OnChartGestureListener{
         FixerAPI fixerAPI = daggerRandomUserComponent.getCurrencyService(); //todo : from MAIN
 
         ArrayList <Single<MetaCurr>> arrayList = new ArrayList();
-//        arrayList.add(fixerAPI.statistics("2017-12-22"));
-//        arrayList.add(fixerAPI.statistics("2017-12-21"));
-//        arrayList.add(fixerAPI.statistics("2017-12-20"));
-//        arrayList.add(fixerAPI.statistics("2017-12-19"));
-//        arrayList.add(fixerAPI.statistics("2017-12-18"));
-//        arrayList.add(fixerAPI.statistics("2017-12-17"));
-//        arrayList.add(fixerAPI.statistics("2017-12-16"));
-//        arrayList.add(fixerAPI.statistics("2017-12-15"));
-//        arrayList.add(fixerAPI.statistics("2017-12-14"));
 //        arrayList.add(fixerAPI.statistics("2017-12-13"));
 
         ArrayList <MetaCurr> emptyList = new ArrayList<>();
