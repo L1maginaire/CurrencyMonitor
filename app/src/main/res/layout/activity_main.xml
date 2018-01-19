@@ -6,7 +6,7 @@
     android:focusableInTouchMode="true"-->
     <EditText
         android:id="@+id/entryfield"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:inputType="textNoSuggestions"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
