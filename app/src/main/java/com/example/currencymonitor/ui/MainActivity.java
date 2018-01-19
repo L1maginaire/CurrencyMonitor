@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);//todo: where?
         list = new ArrayList<>();
 
         if (savedInstanceState != null) {
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
         setContentView(R.layout.activity_main);
         last_update = findViewById(R.id.last_update_date);
+
 
         dbHelper = new CurrencyDBHelper(MainActivity.this);
         mDb = dbHelper.getWritableDatabase();
@@ -100,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 .contextModule(new ContextModule(this))
                 .build();
         fixerAPI = daggerRandomUserComponent.getCurrencyService();
-//        String[] sequence = new String[]{"EUR", "USD", "JPY", "GBP", "CHF", "AUD", "CAD", "SEK"}; //todo: rx
         requestRX("EUR");
 
         recyclerView = (RecyclerView) this.findViewById(R.id.recycler_view);
