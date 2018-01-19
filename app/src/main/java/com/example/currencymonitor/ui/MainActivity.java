@@ -64,6 +64,7 @@ import io.reactivex.schedulers.Schedulers;
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private final static String TAG = MainActivity.class.getSimpleName();
     private final static String KEY_INDEX = "index";
+    private static final DecimalFormat df = new DecimalFormat("#.####");
 
     private SQLiteDatabase mDb;
     private CurrencyDBHelper dbHelper;
@@ -130,14 +131,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
             @Override
             public void afterTextChanged(Editable s) {
-                String number = s.toString();
-                float coef = 0f;
+                float coef;
                 try {
-                    coef = Float.parseFloat(number);
+                    coef = Float.parseFloat(s.toString());
                 } catch (NumberFormatException e) {
+                    coef = 0f;
                 }
                 for (CurrencyData c : list) {
-                    DecimalFormat df = new DecimalFormat("#.####"); //todo?
                     float value = Float.valueOf(df.format(c.getPrimaryRate() * coef));
                     c.setValue(value);
                 }
