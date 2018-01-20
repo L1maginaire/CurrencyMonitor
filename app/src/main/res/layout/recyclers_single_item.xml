@@ -12,7 +12,8 @@
         android:textSize="20dp"
         android:paddingLeft="8dp"
         app:layout_constraintLeft_toRightOf="@id/single_item_imageview"
-        android:textColor="@color/ultra"/>
+        android:textColor="@color/textbright"
+        />
 
     <ImageView
         android:id="@+id/single_item_imageview"
@@ -21,6 +22,6 @@
         android:layout_height="30dp"
         android:layout_gravity="right"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp" />
+        android:layout_marginRight="8dp"/>
 
 </android.support.constraint.ConstraintLayout>

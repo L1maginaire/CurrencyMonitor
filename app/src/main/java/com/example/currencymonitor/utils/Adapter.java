@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.currencymonitor.ui.ChartActivity;
 import com.example.currencymonitor.data.CurrencyData;
 import com.example.currencymonitor.R;
 
@@ -31,7 +30,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.single_item, parent, false);
+        View view = inflater.inflate(R.layout.recyclers_single_item, parent, false);
         return new Holder(view);
     }
 
@@ -66,8 +65,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
 
         @Override
         public void onClick(View v) {
-            Intent intent = ChartActivity.newIntent(mContext, (String) mImageView.getTag());
-            mContext.startActivity(intent);
+//            Intent intent = ChartActivity.newIntent(mContext, (String) mImageView.getTag());
+//            mContext.startActivity(intent);
 //            mContext.startActivity(ChartActivity.newIntent(mContext, mImageView.getId()));
         }
     }

@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,7 +65,7 @@ public class MultiChartFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.listview_chart, container, false);
+        View v = inflater.inflate(R.layout.chart, container, false);
  //       setRetainInstance(true); // to prevent hiding on changing orientation
 
         mChart = (BarChart) v.findViewById(R.id.chartView);
@@ -83,7 +82,7 @@ public class MultiChartFragment extends Fragment {
         legend.setEnabled(false);
 
         YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setTextColor(getResources().getColor(R.color.ultra));
+        leftAxis.setTextColor(getResources().getColor(R.color.textbright));
         YAxis rightAxis = mChart.getAxisRight();
 //        rightAxis.setLabelCount(5, false);
         rightAxis.setEnabled(false);
@@ -93,11 +92,11 @@ public class MultiChartFragment extends Fragment {
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
-        xAxis.setTextColor(getResources().getColor(R.color.ultra));
+        xAxis.setTextColor(getResources().getColor(R.color.textbright));
         xAxis.setValueFormatter((value, axis) -> dates10.get((int)value));
 
-        Spinner spinnerF = (Spinner) v.findViewById(R.id.from);
-        Spinner spinnerW = (Spinner) v.findViewById(R.id.where);
+        Spinner spinnerF = (Spinner) v.findViewById(R.id.spinnerfrom);
+        Spinner spinnerW = (Spinner) v.findViewById(R.id.spinnerto);
         ArrayAdapter<Flags> adapter = new CustomSpinnerAdapter(getContext(), R.layout.row, currencies);
 
         spinnerW.setAdapter(adapter);
@@ -131,7 +130,7 @@ public class MultiChartFragment extends Fragment {
 
         BarDataSet d = new BarDataSet(entries, "Dates");
         d.setColor(Color.parseColor("#546E7A"));
-        d.setValueTextColor(getResources().getColor(R.color.ultra));
+        d.setValueTextColor(getResources().getColor(R.color.textbright));
         d.setValueTextSize(15f);
         d.setValueFormatter((value, entry, dataSetIndex, viewPortHandler) -> new DecimalFormat("#.###").format(value));
         d.setBarShadowColor(Color.rgb(203, 203, 203));

@@ -28,16 +28,6 @@
                 android:value=".ui.MainActivity" />
         </activity>
 
-        <activity
-            android:name=".ui.ChartActivity"
-            android:label="@string/chart"
-            android:theme="@style/PreferenceFixTheme.Light.DarkActionBar"
-            android:parentActivityName=".ui.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity" />
-        </activity>
-
     </application>
 
 </manifest>

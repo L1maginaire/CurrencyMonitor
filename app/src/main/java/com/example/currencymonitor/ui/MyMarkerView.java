@@ -7,6 +7,7 @@ package com.example.currencymonitor.ui;
 import android.content.Context;
 import android.widget.TextView;
 
+import com.asha.nightowllib.NightOwl;
 import com.example.currencymonitor.R;
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.CandleEntry;
@@ -28,7 +29,6 @@ public class MyMarkerView extends MarkerView {
     // content (user-interface)
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
-
         if (e instanceof CandleEntry) {
 
             CandleEntry ce = (CandleEntry) e;
