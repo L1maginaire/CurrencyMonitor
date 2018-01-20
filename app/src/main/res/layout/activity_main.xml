@@ -9,6 +9,7 @@
 
     <EditText
     android:id="@+id/entryfield"
+        android:textColor="@color/test"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -24,8 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
+        android:textColor="@color/test"
         android:padding="10dp"
         android:textSize="15dp" />
 

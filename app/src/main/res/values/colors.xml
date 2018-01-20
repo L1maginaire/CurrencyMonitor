@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#673AB7</color>
-    <color name="colorPrimaryDark">#512DA8</color>
-    <color name="colorAccent">#FF9100</color>
+    <color name="colorPrimary">#212121</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#78909C</color>
     <color name="colorPrimaryLight">#D1C4E9</color>
     <color name="ultra">#00B8D4</color>
     <color name="fon">#263238</color>
+    <color name="test">#78909C</color>
+    <color name="forchart">#455A64</color>
+    <color name="white">#FFFFFF</color>
 </resources>

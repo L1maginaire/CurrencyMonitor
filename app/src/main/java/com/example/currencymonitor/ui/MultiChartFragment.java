@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.XAxis.XAxisPosition;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -80,13 +82,18 @@ public class MultiChartFragment extends Fragment {
         Legend legend = mChart.getLegend();
         legend.setEnabled(false);
 
-//        YAxis rightAxis = mChart.getAxisRight();
+        YAxis leftAxis = mChart.getAxisLeft();
+        leftAxis.setTextColor(getResources().getColor(R.color.ultra));
+        YAxis rightAxis = mChart.getAxisRight();
 //        rightAxis.setLabelCount(5, false);
+        rightAxis.setEnabled(false);
 //        rightAxis.setSpaceTop(15f); // todo: necessity
+
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
+        xAxis.setTextColor(getResources().getColor(R.color.ultra));
         xAxis.setValueFormatter((value, axis) -> dates10.get((int)value));
 
         Spinner spinnerF = (Spinner) v.findViewById(R.id.from);
@@ -123,7 +130,9 @@ public class MultiChartFragment extends Fragment {
         }
 
         BarDataSet d = new BarDataSet(entries, "Dates");
-        d.setColor(Color.GRAY);
+        d.setColor(Color.parseColor("#546E7A"));
+        d.setValueTextColor(getResources().getColor(R.color.ultra));
+        d.setValueTextSize(15f);
         d.setValueFormatter((value, entry, dataSetIndex, viewPortHandler) -> new DecimalFormat("#.###").format(value));
         d.setBarShadowColor(Color.rgb(203, 203, 203));
 
