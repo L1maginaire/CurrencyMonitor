@@ -83,9 +83,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);//todo: where?
         list = new ArrayList<>();
 
-        if (savedInstanceState != null) {
-            list = (ArrayList<CurrencyData>) savedInstanceState.getSerializable(KEY_INDEX);
-        }
+//        if (savedInstanceState != null) {
+//            list = (ArrayList<CurrencyData>) savedInstanceState.getSerializable(KEY_INDEX);
+//        }
         setContentView(R.layout.activity_main);
         last_update = findViewById(R.id.last_update_date);
 
