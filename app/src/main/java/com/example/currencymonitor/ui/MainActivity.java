@@ -165,11 +165,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     public boolean onOptionsItemSelected(MenuItem item) { //TODO: https://developer.android.com/training/appbar/setting-up.html
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
             Intent settings = new Intent(this, SettingsActivity.class);
             startActivity(settings);
             return true;
-        }
+        }*/
         return super.onOptionsItemSelected(item);
     }
 
