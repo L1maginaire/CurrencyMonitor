@@ -46,6 +46,7 @@ import android.widget.Spinner;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
@@ -147,6 +148,11 @@ public class MultiChartFragment extends Fragment {
     }
 
     private void requestStatistics(final int from, final int where) {
+        if (from == where){
+            mChart.setData(null);
+            mChart.invalidate();
+            return;
+        }
         String base = currencies.get(from).toString();
         ArrayList<Single<MetaCurr>> dataList = daysSequence(base);
         ArrayList <MetaCurr> emptyList = new ArrayList<>();
@@ -154,6 +160,12 @@ public class MultiChartFragment extends Fragment {
         mCompositeDisposable = new CompositeDisposable();
         mCompositeDisposable.add(n
                 .subscribeOn(Schedulers.io())
+//                .filter(new Predicate<List<MetaCurr>>() {
+//                    @Override
+//                    public boolean test(List<MetaCurr> metaCurrs) throws Exception {
+//                        return metaCurrs.get();
+//                    }
+//                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list -> {
                     floats = new ArrayList<>();
