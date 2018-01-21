@@ -116,9 +116,6 @@ public class MultiChartFragment extends Fragment {
                     daysSequence(pair.getX(), pair.getY());
                 });
 
-
-//        LinearLayout parent = (LinearLayout) v.findViewById(R.id.chartView);
-//        parent.addView(mChart);
         return v;
     }
 
@@ -130,7 +127,7 @@ public class MultiChartFragment extends Fragment {
         }
 
         BarDataSet d = new BarDataSet(entries, "Dates");
-        d.setColor(Color.parseColor("#546E7A"));
+        d.setColor(getResources().getColor(R.color.barcolor));
         d.setValueTextColor(getResources().getColor(R.color.textbright));
         d.setValueTextSize(15f);
         d.setValueFormatter((value, entry, dataSetIndex, viewPortHandler) -> new DecimalFormat("#.###").format(value));
