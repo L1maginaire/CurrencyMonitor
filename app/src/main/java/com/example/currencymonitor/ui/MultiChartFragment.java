@@ -99,8 +99,9 @@ public class MultiChartFragment extends Fragment {
         Spinner spinnerW = (Spinner) v.findViewById(R.id.spinnerto);
         ArrayAdapter<Flags> adapter = new CustomSpinnerAdapter(getContext(), R.layout.row, currencies);
 
-        spinnerW.setAdapter(adapter);
         spinnerF.setAdapter(adapter);
+        spinnerW.setAdapter(adapter);
+        spinnerW.setSelection(1);
 
         rx.Observable<Integer> obs1 = RxAdapterView.itemSelections(spinnerF);
         rx.Observable<Integer> obs2 = RxAdapterView.itemSelections(spinnerW);
