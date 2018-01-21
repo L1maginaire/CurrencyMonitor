@@ -55,7 +55,6 @@ import static rx.android.schedulers.AndroidSchedulers.mainThread;
  */
 
 public class MultiChartFragment extends Fragment {
-    ArrayList<BarData> barData = new ArrayList<>();
     ArrayList<Float> floats;
     CompositeDisposable mCompositeDisposable;
     List<Flags> currencies = Arrays.asList(Flags.values());
@@ -75,7 +74,7 @@ public class MultiChartFragment extends Fragment {
         mv.setChartView(mChart);
         mChart.setMarker(mv);
 
-        mChart.setDrawGridBackground(false); // ?!
+        mChart.setDrawGridBackground(false); // todo: necessity
         mChart.setDrawBarShadow(false);
 
         Legend legend = mChart.getLegend();
@@ -84,10 +83,7 @@ public class MultiChartFragment extends Fragment {
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setTextColor(getResources().getColor(R.color.textbright));
         YAxis rightAxis = mChart.getAxisRight();
-//        rightAxis.setLabelCount(5, false);
         rightAxis.setEnabled(false);
-//        rightAxis.setSpaceTop(15f); // todo: necessity
-
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxisPosition.BOTTOM);
@@ -172,7 +168,7 @@ public class MultiChartFragment extends Fragment {
                     floats = new ArrayList<>();
 
                     for (MetaCurr m:list) {
-                        floats.add(choise(y, m));
+                        floats.add(adaptFunction(y, m));
                     }
                     mChart.setData(generateData(floats));
                     mChart.notifyDataSetChanged();
@@ -181,36 +177,26 @@ public class MultiChartFragment extends Fragment {
         );
     }
 
-    float choise(int y, MetaCurr m){
-        Float f=0f;
+    float adaptFunction(int y, MetaCurr m){
         switch (y){
             case 0:
-                f = m.getRates().getEUR();
-                break;
+                return m.getRates().getEUR();
             case 1:
-                f = m.getRates().getUSD();
-                break;
+                return m.getRates().getUSD();
             case 2:
-                f = m.getRates().getJPY();
-                break;
+                return m.getRates().getJPY();
             case 3:
-                f = m.getRates().getGBP();
-                break;
+                return m.getRates().getGBP();
             case 4:
-                f = m.getRates().getCHF();
-                break;
+                return m.getRates().getCHF();
             case 5:
-                f = m.getRates().getAUD();
-                break;
+                return m.getRates().getAUD();
             case 6:
-                f = m.getRates().getCAD();
-                break;
+                return m.getRates().getCAD();
             case 7:
-                f = m.getRates().getSEK();
-                break;
+                return m.getRates().getSEK();
+            default:
+                return 0f;
         }
-        if (f==null)
-            f = 0f;
-        return f;
     }
 }
