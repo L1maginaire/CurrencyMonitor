@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import com.example.currencymonitor.data.db.Pair;
 import com.example.currencymonitor.R;
 import com.example.currencymonitor.data.FixerAPI;
 import com.example.currencymonitor.data.MetaCurr;
@@ -37,7 +38,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.LinkedList;
 import java.util.List;
 
 import android.support.v4.app.Fragment;
@@ -59,7 +59,11 @@ public class MultiChartFragment extends Fragment {
     CompositeDisposable mCompositeDisposable;
     List<Flags> currencies = Arrays.asList(Flags.values());
     BarChart mChart;
-    private static List <String> dates10 = new LinkedList<>();
+    private static final SimpleDateFormat dateFormatWide = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat dateFormatNarr = new SimpleDateFormat("dd/MM");
+    private FixerAPI fixerAPI;
+    private Calendar calendar = new GregorianCalendar();
+    private List <String> dates = new ArrayList<>();
 
     @Nullable
     @Override
@@ -89,7 +93,7 @@ public class MultiChartFragment extends Fragment {
         xAxis.setPosition(XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
         xAxis.setTextColor(getResources().getColor(R.color.textbright));
-        xAxis.setValueFormatter((value, axis) -> dates10.get((int)value));
+        xAxis.setValueFormatter((value, axis) -> dates.get((int)value));
 
         Spinner spinnerF = (Spinner) v.findViewById(R.id.spinnerfrom);
         Spinner spinnerW = (Spinner) v.findViewById(R.id.spinnerto);
@@ -99,17 +103,22 @@ public class MultiChartFragment extends Fragment {
         spinnerW.setAdapter(adapter);
         spinnerW.setSelection(1);
 
+        CurrencyComponent daggerRandomUserComponent = DaggerCurrencyComponent.builder()
+                .contextModule(new ContextModule(getContext()))
+                .build();
+        fixerAPI = daggerRandomUserComponent.getCurrencyService();
+
         rx.Observable<Integer> obs1 = RxAdapterView.itemSelections(spinnerF);
         rx.Observable<Integer> obs2 = RxAdapterView.itemSelections(spinnerW);
         rx.Observable.combineLatest(obs1, obs2, (s, s2) -> {
-            com.example.currencymonitor.data.db.Pair pair = new com.example.currencymonitor.data.db.Pair(s, s2);
+            Pair pair = new Pair(s, s2);
             return pair;
         })
                 .subscribeOn(mainThread())
                 .subscribe(pair -> {
                     Log.v("spinner", pair.getX().toString());
                     Log.v("spinner", pair.getY().toString());
-                    daysSequence(pair.getX(), pair.getY());
+                    requestStatistics(pair.getX(), pair.getY());
                 });
 
         return v;
@@ -137,44 +146,37 @@ public class MultiChartFragment extends Fragment {
         return cd;
     }
 
-    private void daysSequence(final int x, final int y) {
-        String base = currencies.get(x).toString();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        ArrayList<Single<MetaCurr>> dataList = new ArrayList();
-        Calendar calendar = new GregorianCalendar();
-
-        CurrencyComponent daggerRandomUserComponent = DaggerCurrencyComponent.builder()
-                .contextModule(new ContextModule(getContext()))
-                .build();
-        FixerAPI fixerAPI = daggerRandomUserComponent.getCurrencyService();
-        for (int i = 0; i < 10; i++) {
-            Date result = calendar.getTime();
-            dates10.add(new SimpleDateFormat("dd/MM").format(result));
-            dataList.add(fixerAPI.statistics(sdf.format(result), base));
-            calendar.add(Calendar.DATE, -1);
-        }
-        Collections.reverse(dates10);
-
+    private void requestStatistics(final int from, final int where) {
+        String base = currencies.get(from).toString();
+        ArrayList<Single<MetaCurr>> dataList = daysSequence(base);
         ArrayList <MetaCurr> emptyList = new ArrayList<>();
-
-        Single<List<MetaCurr>> n = Single.merge(dataList).buffer(Integer.MAX_VALUE).single(emptyList);
-
+        Single<List<MetaCurr>> n = Single.merge(dataList).buffer(Integer.MAX_VALUE).single(emptyList); // todo: single?
         mCompositeDisposable = new CompositeDisposable();
-
         mCompositeDisposable.add(n
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list -> {
                     floats = new ArrayList<>();
-
                     for (MetaCurr m:list) {
-                        floats.add(adaptFunction(y, m));
+                        floats.add(adaptFunction(where, m));
                     }
                     mChart.setData(generateData(floats));
                     mChart.notifyDataSetChanged();
                     mChart.invalidate();
                 })
         );
+    }
+
+    private ArrayList<Single<MetaCurr>> daysSequence(String base) {
+        ArrayList<Single<MetaCurr>> meta = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            Date result = calendar.getTime();
+            dates.add(dateFormatNarr.format(result));
+            meta.add(fixerAPI.statistics(dateFormatWide.format(result), base));
+            calendar.add(Calendar.DATE, -1);
+        }
+        Collections.reverse(dates);
+        return meta;
     }
 
     float adaptFunction(int y, MetaCurr m){
