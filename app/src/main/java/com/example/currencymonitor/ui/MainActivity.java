@@ -25,10 +25,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.asha.nightowllib.NightOwl;
 import com.example.currencymonitor.R;
 import com.example.currencymonitor.data.FixerAPI;
-import com.example.currencymonitor.data.MetaCurr;
 import com.example.currencymonitor.data.Rates;
 import com.example.currencymonitor.data.db.CurrencyDBHelper;
 import com.example.currencymonitor.data.db.Flags;
@@ -55,10 +53,7 @@ import static com.example.currencymonitor.data.db.CurrencyContract.Entry.TABLE_N
 import com.example.currencymonitor.data.CurrencyData;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 
@@ -83,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);//todo: where?
         list = new ArrayList<>();
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 //        if (savedInstanceState != null) {
 //            list = (ArrayList<CurrencyData>) savedInstanceState.getSerializable(KEY_INDEX);
@@ -231,30 +227,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mCompositeDisposable.add(fixerAPI.getData(currecy)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .map(new Function<MetaCurr, Rates>() {
-                            @Override
-                            public Rates apply(
-                                    @NonNull final MetaCurr data)
-                                    throws Exception {
-                                return data.getRates();
-                            }
-                        })
-                        .subscribe(new Consumer<Rates>() {
-                            @Override
-                            public void accept(
-                                    @NonNull final Rates rates)
-                                    throws Exception {
-                                dBinsert(rates, currecy);
-                                last_update.setText("Last update: " + android.text.format.DateFormat.format("dd-yyyy-MM hh:mm",
-                                        mLastUpdateTime));
+                        .map(data -> data.getRates())
+                        .subscribe(rates -> {
+                            dBinsert(rates, currecy);
+                            last_update.setText("Last update: " + android.text.format.DateFormat.format("dd-yyyy-MM hh:mm",
+                                    mLastUpdateTime));
 //                        setupSharedPreferences();
-                                bindData();
-                                setupAdapter();
-                            }
+                            bindData();
+                            setupAdapter();
                         })
         );
     }
-
 
     private void dBinsert(Rates rates, String base) {
         ContentValues cv = new ContentValues();
