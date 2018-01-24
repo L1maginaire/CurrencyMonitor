@@ -10,8 +10,8 @@ import retrofit2.http.Query;
 
 public interface FixerAPI /*extends Serializable */{
     @GET("latest")
-    Single<MetaCurr> getData(@Query("base") String baseCurrency);
+    Single<MetaCurrency> getData(@Query("base") String baseCurrency);
 
     @GET("{date}")
-    Single<MetaCurr> statistics(@Path("date")String date, @Query("base")String base);
+    Single<MetaCurrency> statistics(@Path("date")String date, @Query("base")String base);
 }

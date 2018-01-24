@@ -40,7 +40,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
         if (list == null || list.size() == 0)
             return;
         float val = (float) list.get(position).getValue();
-        int res = (Integer) list.get(position).getPic();
+        int res = (int) list.get(position).getPic();
         String tag = (String) list.get(position).getTag();
         holder.textView.setText(String.valueOf(val));
         holder.mImageView.setImageResource(res);

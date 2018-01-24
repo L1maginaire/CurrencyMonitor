@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.currencymonitor.R;
-import com.example.currencymonitor.data.db.Flags;
+import com.example.currencymonitor.data.Flags;
 
 import java.util.List;
 

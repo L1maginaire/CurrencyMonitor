@@ -3,7 +3,7 @@ package com.example.currencymonitor.data;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class MetaCurr {
+public class MetaCurrency {
 
     @SerializedName("base")
     @Expose

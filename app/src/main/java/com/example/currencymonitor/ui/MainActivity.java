@@ -2,7 +2,6 @@ package com.example.currencymonitor.ui;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -29,7 +28,7 @@ import com.example.currencymonitor.R;
 import com.example.currencymonitor.data.FixerAPI;
 import com.example.currencymonitor.data.Rates;
 import com.example.currencymonitor.data.db.CurrencyDBHelper;
-import com.example.currencymonitor.data.db.Flags;
+import com.example.currencymonitor.data.Flags;
 import com.example.currencymonitor.di.components.CurrencyComponent;
 import com.example.currencymonitor.di.components.DaggerCurrencyComponent;
 import com.example.currencymonitor.di.modules.ContextModule;
@@ -83,17 +82,18 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 //        if (savedInstanceState != null) {
 //            list = (ArrayList<CurrencyData>) savedInstanceState.getSerializable(KEY_INDEX);
 //        }
+
         setContentView(R.layout.activity_main);
         last_update = findViewById(R.id.last_update_date);
 
-
         dbHelper = new CurrencyDBHelper(MainActivity.this);
         mDb = dbHelper.getWritableDatabase();
+
         if (dbExists(mDb))
             mDb.delete(TABLE_NAME, null, null);
         if (!isOnline()) {
             Toast.makeText(this, "Please, check your Internet connection.", Toast.LENGTH_LONG).show(); //todo: broadcast
-            this.finish();
+            this.finish(); //todo: broadcastreciever, RX
             return;
         }
 
@@ -118,13 +118,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         entryfield.setRawInputType(Configuration.KEYBOARD_12KEY);
         entryfield.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -135,8 +132,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     coef = 0f;
                 }
                 for (CurrencyData c : list) {
-                    float value = Float.valueOf(df.format(c.getPrimaryRate() * coef));
-                    c.setValue(value);
+                    c.setValue(Float.valueOf(df.format(c.getPrimaryRate() * coef)));
                 }
                 if (mAdapter != null)
                     mAdapter.notifyDataSetChanged();

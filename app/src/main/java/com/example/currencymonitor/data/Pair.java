@@ -1,4 +1,4 @@
-package com.example.currencymonitor.data.db;
+package com.example.currencymonitor.data;
 
 /**
  * Created by l1maginaire on 1/12/18.

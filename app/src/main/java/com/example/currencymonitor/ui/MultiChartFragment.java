@@ -10,11 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
-import com.example.currencymonitor.data.db.Pair;
+import com.example.currencymonitor.data.MetaCurrency;
+import com.example.currencymonitor.data.Pair;
 import com.example.currencymonitor.R;
 import com.example.currencymonitor.data.FixerAPI;
-import com.example.currencymonitor.data.MetaCurr;
-import com.example.currencymonitor.data.db.Flags;
+import com.example.currencymonitor.data.Flags;
 import com.example.currencymonitor.di.components.CurrencyComponent;
 import com.example.currencymonitor.di.components.DaggerCurrencyComponent;
 import com.example.currencymonitor.di.modules.ContextModule;
@@ -46,7 +46,6 @@ import android.widget.Spinner;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
@@ -154,22 +153,22 @@ public class MultiChartFragment extends Fragment {
             return;
         }
         String base = currencies.get(from).toString();
-        ArrayList<Single<MetaCurr>> dataList = daysSequence(base);
-        ArrayList <MetaCurr> emptyList = new ArrayList<>();
-        Single<List<MetaCurr>> n = Single.merge(dataList).buffer(Integer.MAX_VALUE).single(emptyList); // todo: single?
+        ArrayList<Single<MetaCurrency>> dataList = daysSequence(base);
+        ArrayList <MetaCurrency> emptyList = new ArrayList<>();
+        Single<List<MetaCurrency>> n = Single.merge(dataList).buffer(Integer.MAX_VALUE).single(emptyList); // todo: single?
         mCompositeDisposable = new CompositeDisposable();
         mCompositeDisposable.add(n
                 .subscribeOn(Schedulers.io())
-//                .filter(new Predicate<List<MetaCurr>>() {
+//                .filter(new Predicate<List<MetaCurrency>>() {
 //                    @Override
-//                    public boolean test(List<MetaCurr> metaCurrs) throws Exception {
+//                    public boolean test(List<MetaCurrency> metaCurrs) throws Exception {
 //                        return metaCurrs.get();
 //                    }
 //                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list -> {
                     floats = new ArrayList<>();
-                    for (MetaCurr m:list) {
+                    for (MetaCurrency m:list) {
                         floats.add(adaptFunction(where, m));
                     }
                     mChart.setData(generateData(floats));
@@ -179,8 +178,8 @@ public class MultiChartFragment extends Fragment {
         );
     }
 
-    private ArrayList<Single<MetaCurr>> daysSequence(String base) {
-        ArrayList<Single<MetaCurr>> meta = new ArrayList<>();
+    private ArrayList<Single<MetaCurrency>> daysSequence(String base) {
+        ArrayList<Single<MetaCurrency>> meta = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             Date result = calendar.getTime();
             dates.add(dateFormatNarr.format(result));
@@ -191,7 +190,7 @@ public class MultiChartFragment extends Fragment {
         return meta;
     }
 
-    float adaptFunction(int y, MetaCurr m){
+    float adaptFunction(int y, MetaCurrency m){
         switch (y){
             case 0:
                 return m.getRates().getEUR();

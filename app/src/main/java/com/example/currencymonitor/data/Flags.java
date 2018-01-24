@@ -1,4 +1,4 @@
-package com.example.currencymonitor.data.db;
+package com.example.currencymonitor.data;
 
 import com.example.currencymonitor.R;
 
@@ -17,11 +17,12 @@ public enum Flags {
     SEK(R.drawable.sweden);
 
     private int value;
-    private Flags(int value){
-        this.value=value;
+
+    private Flags(int value) {
+        this.value = value;
     }
 
-    public int getValue(){
+    public int getValue() {
         return value;
     }
 }
