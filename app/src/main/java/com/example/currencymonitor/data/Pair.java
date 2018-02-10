@@ -5,18 +5,18 @@ package com.example.currencymonitor.data;
  */
 
 public class Pair {
-    public final Integer x;
-    public final Integer y;
-    public Pair(Integer x, Integer y) {
-        this.x = x;
-        this.y = y;
+    public final Integer from;
+    public final Integer where;
+    public Pair(Integer from, Integer where) {
+        this.from = from;
+        this.where = where;
     }
 
-    public Integer getX() {
-        return x;
+    public Integer getFrom() {
+        return from;
     }
 
-    public Integer getY() {
-        return y;
+    public Integer getWhere() {
+        return where;
     }
 }

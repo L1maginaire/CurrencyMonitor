@@ -15,7 +15,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
 
-public class MyMarkerView extends MarkerView {
+public class MyMarkerView extends MarkerView { // todo: убрать округление?
 
     private TextView tvContent;
 

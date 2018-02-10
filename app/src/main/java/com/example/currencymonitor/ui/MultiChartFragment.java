@@ -32,13 +32,8 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.jakewharton.rxbinding.widget.RxAdapterView;
 
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.support.v4.app.Fragment;
@@ -60,11 +55,7 @@ public class MultiChartFragment extends Fragment {
     private CompositeDisposable mCompositeDisposable;
     private List<Flags> currencies = Arrays.asList(Flags.values());
     private BarChart mChart;
-    private static final SimpleDateFormat dateFormatWide = new SimpleDateFormat("yyyy-MM-dd"); //todo объект
-    private static final SimpleDateFormat dateFormatNarr = new SimpleDateFormat("dd/MM");
     private FixerAPI fixerAPI;
-    private Calendar calendar = new GregorianCalendar();
-    private List <String> dates = new ArrayList<>();
     private DaysSequence daysSequence = new DaysSequence();
 
 
@@ -81,7 +72,7 @@ public class MultiChartFragment extends Fragment {
         mv.setChartView(mChart);
         mChart.setMarker(mv);
 
-        mChart.setDrawGridBackground(false); // todo: necessity
+        mChart.setDrawGridBackground(false);
         mChart.setDrawBarShadow(false);
 
         Legend legend = mChart.getLegend();
@@ -110,19 +101,18 @@ public class MultiChartFragment extends Fragment {
                 .contextModule(new ContextModule(getContext()))
                 .build();
         fixerAPI = daggerRandomUserComponent.getCurrencyService();
-        DaysSequence daysSequence = new DaysSequence();
 
         rx.Observable<Integer> obs1 = RxAdapterView.itemSelections(spinnerF);
         rx.Observable<Integer> obs2 = RxAdapterView.itemSelections(spinnerW);
-        rx.Observable.combineLatest(obs1, obs2, (s, s2) -> {
-            Pair pair = new Pair(s, s2);
+        rx.Observable.combineLatest(obs1, obs2, (intFrom, intWhere) -> {
+            Pair pair = new Pair(intFrom, intWhere);
             return pair;
         })
                 .subscribeOn(mainThread())
                 .subscribe(pair -> {
-                    Log.v("spinner", pair.getX().toString());
-                    Log.v("spinner", pair.getY().toString());
-                    requestStatistics(pair.getX(), pair.getY());
+                    Log.v("spinner", pair.getFrom().toString());
+                    Log.v("spinner", pair.getWhere().toString());
+                    requestStatistics(pair.getFrom(), pair.getWhere());
                 });
 
         return v;
@@ -138,7 +128,7 @@ public class MultiChartFragment extends Fragment {
         BarDataSet d = new BarDataSet(entries, "Dates");
         d.setColor(getResources().getColor(R.color.barcolor));
         d.setValueTextColor(getResources().getColor(R.color.textbright));
-        d.setValueTextSize(15f);
+        d.setValueTextSize(12f);
         d.setValueFormatter((value, entry, dataSetIndex, viewPortHandler) -> new DecimalFormat("#.###").format(value));
         d.setBarShadowColor(Color.rgb(203, 203, 203));
 
@@ -183,7 +173,6 @@ public class MultiChartFragment extends Fragment {
     }
 
     private ArrayList<Single<MetaCurrency>> daysSequence(String base) {
-
         ArrayList<Single<MetaCurrency>> meta = new ArrayList<>();
         for (int i = 0; i < daysSequence.getRetrofitDates().size(); i++) {
             meta.add(fixerAPI.statistics(daysSequence.getRetrofitDates().get(i), base));

@@ -1,7 +1,5 @@
 package com.example.currencymonitor.utils;
 
-import com.example.currencymonitor.data.MetaCurrency;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
