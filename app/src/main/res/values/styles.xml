@@ -4,9 +4,8 @@
         <item name="colorPrimaryDark">@color/black</item>
         <item name="colorAccent">@color/textbright</item>
     </style>
-    <style name="Theme.Experimental" parent="@style/PreferenceFixTheme.Light.DarkActionBar">
-        <item name="colorPrimary">@color/background</item>
-        <item name="colorPrimaryDark">@color/black</item>
-        <item name="colorAccent">@color/textbright</item>
+    <style name="Settings" parent="@style/PreferenceFixTheme.Light.DarkActionBar">
+        <item name="android:background">@color/background</item>
+        <item name="android:textColor">@color/textbright</item>
     </style>
 </resources>

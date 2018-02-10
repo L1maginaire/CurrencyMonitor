@@ -9,48 +9,56 @@
         android:defaultValue="@bool/pref_eur"
         android:key="@string/pref_show_eur"
         android:title="@string/pref_eur"
+        android:textColor="@color/textbright"
         android:icon="@drawable/european_union"/>
 
     <CheckBoxPreference
         android:defaultValue="@bool/pref_usd"
         android:key="@string/pref_show_usd"
         android:title="@string/pref_usd"
+        android:textColor="@color/textbright"
         android:icon="@drawable/united_states"/>
 
     <CheckBoxPreference
         android:defaultValue="@bool/pref_jpy"
         android:key="@string/pref_show_jpy"
         android:title="@string/pref_jpy"
+        android:textColor="@color/textbright"
         android:icon="@drawable/japan"/>
 
     <CheckBoxPreference
         android:defaultValue="@bool/pref_gbp"
         android:key="@string/pref_show_gbp"
         android:title="@string/pref_gbp"
+        android:textColor="@color/textbright"
         android:icon="@drawable/united_kingdom"/>
 
     <CheckBoxPreference
         android:defaultValue="@bool/pref_chf"
         android:key="@string/pref_show_chf"
         android:title="@string/pref_chf"
+        android:textColor="@color/textbright"
         android:icon="@drawable/switzerland"/>
 
     <CheckBoxPreference
         android:defaultValue="@bool/pref_aud"
         android:key="@string/pref_show_aud"
         android:title="@string/pref_aud"
+        android:textColor="@color/textbright"
         android:icon="@drawable/australia"/>
 
     <CheckBoxPreference
         android:defaultValue="@bool/pref_cad"
         android:key="@string/pref_show_cad"
         android:title="@string/pref_cad"
+        android:textColor="@color/textbright"
         android:icon="@drawable/canada"/>
 
     <CheckBoxPreference
         android:defaultValue="@bool/pref_sek"
         android:key="@string/pref_show_sek"
         android:title="@string/pref_sek"
+        android:textColor="@color/textbright"
         android:icon="@drawable/sweden"/>
 
 </PreferenceScreen>
