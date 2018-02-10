@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     mAdapter.notifyDataSetChanged();
             }
         });
+        setupSharedPreferences();
     }
 
     @Override
@@ -172,6 +173,23 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.pref_show_eur))) {
+//            mVisualizerView.setShowBass(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_eur)));
+        } else if (key.equals(getString(R.string.pref_show_usd))) {
+//            mVisualizerView.setShowMid(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_usd)));
+        } else if (key.equals(getString(R.string.pref_show_jpy))) {
+//            mVisualizerView.setShowTreble(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_jpy)));
+        } else if (key.equals(getString(R.string.pref_show_gbp))) {
+//            mVisualizerView.setShowTreble(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_gbp)));
+        } else if (key.equals(getString(R.string.pref_show_chf))) {
+//            mVisualizerView.setShowTreble(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_chf)));
+        } else if (key.equals(getString(R.string.pref_show_aud))) {
+//            mVisualizerView.setShowTreble(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_aud)));
+        } else if (key.equals(getString(R.string.pref_show_cad))) {
+//            mVisualizerView.setShowTreble(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_cad)));
+        } else if (key.equals(getString(R.string.pref_show_sek))) {
+//            mVisualizerView.setShowTreble(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_sek)));
+        }
     }
 
     @Override
@@ -250,5 +268,20 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         long l = mDb.insert(TABLE_NAME, null, cv);
         mLastUpdateTime = new GregorianCalendar();
         Log.d(TAG, "dBinsert: " + String.valueOf(l));
+    }
+
+    private void setupSharedPreferences() {
+        // Get all of the values from shared preferences to set it up
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+//        mVisualizerView.setShowBass(sharedPreferences.getBoolean(getString(R.string.pref_show_bass_key),
+//                getResources().getBoolean(R.bool.pref_show_bass_default)));
+//        mVisualizerView.setShowMid(sharedPreferences.getBoolean(getString(R.string.pref_show_mid_range_key),
+//                getResources().getBoolean(R.bool.pref_show_mid_range_default)));
+//        mVisualizerView.setShowTreble(sharedPreferences.getBoolean(getString(R.string.pref_show_treble_key),
+//                getResources().getBoolean(R.bool.pref_show_treble_default)));
+//        mVisualizerView.setMinSizeScale(1);
+//        loadColorFromPreferences(sharedPreferences);
+        // Register the listener
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 }

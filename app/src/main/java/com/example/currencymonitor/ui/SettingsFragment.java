@@ -6,6 +6,7 @@ import com.example.currencymonitor.R;
 import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
@@ -15,13 +16,13 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         SharedPreferences.OnSharedPreferenceChangeListener {
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        /*Preference preference = findPreference(key);
+        Preference preference = findPreference(key);
         if (null != preference) {
             if (!(preference instanceof CheckBoxPreference)) {
                 String value = sharedPreferences.getString(preference.getKey(), "");
                 setPreferenceSummary(preference, value);
             }
-        }*/
+        }
     }
 
     private void setPreferenceSummary(Preference preference, String value) {
