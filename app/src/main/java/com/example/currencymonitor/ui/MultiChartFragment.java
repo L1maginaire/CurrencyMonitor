@@ -19,6 +19,7 @@ import com.example.currencymonitor.di.components.CurrencyComponent;
 import com.example.currencymonitor.di.components.DaggerCurrencyComponent;
 import com.example.currencymonitor.di.modules.ContextModule;
 import com.example.currencymonitor.utils.CustomSpinnerAdapter;
+import com.example.currencymonitor.utils.DaysSequence;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -55,15 +56,17 @@ import static rx.android.schedulers.AndroidSchedulers.mainThread;
  */
 
 public class MultiChartFragment extends Fragment {
-    ArrayList<Float> floats;
-    CompositeDisposable mCompositeDisposable;
-    List<Flags> currencies = Arrays.asList(Flags.values());
-    BarChart mChart;
-    private static final SimpleDateFormat dateFormatWide = new SimpleDateFormat("yyyy-MM-dd");
+    private ArrayList<Float> floats;
+    private CompositeDisposable mCompositeDisposable;
+    private List<Flags> currencies = Arrays.asList(Flags.values());
+    private BarChart mChart;
+    private static final SimpleDateFormat dateFormatWide = new SimpleDateFormat("yyyy-MM-dd"); //todo объект
     private static final SimpleDateFormat dateFormatNarr = new SimpleDateFormat("dd/MM");
     private FixerAPI fixerAPI;
     private Calendar calendar = new GregorianCalendar();
     private List <String> dates = new ArrayList<>();
+    private DaysSequence daysSequence = new DaysSequence();
+
 
     @Nullable
     @Override
@@ -93,7 +96,7 @@ public class MultiChartFragment extends Fragment {
         xAxis.setPosition(XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
         xAxis.setTextColor(getResources().getColor(R.color.textbright));
-        xAxis.setValueFormatter((value, axis) -> dates.get((int)value));
+        xAxis.setValueFormatter((value, axis) -> daysSequence.getTableDates().get((int)value));
 
         Spinner spinnerF = (Spinner) v.findViewById(R.id.spinnerfrom);
         Spinner spinnerW = (Spinner) v.findViewById(R.id.spinnerto);
@@ -107,6 +110,7 @@ public class MultiChartFragment extends Fragment {
                 .contextModule(new ContextModule(getContext()))
                 .build();
         fixerAPI = daggerRandomUserComponent.getCurrencyService();
+        DaysSequence daysSequence = new DaysSequence();
 
         rx.Observable<Integer> obs1 = RxAdapterView.itemSelections(spinnerF);
         rx.Observable<Integer> obs2 = RxAdapterView.itemSelections(spinnerW);
@@ -179,19 +183,15 @@ public class MultiChartFragment extends Fragment {
     }
 
     private ArrayList<Single<MetaCurrency>> daysSequence(String base) {
+
         ArrayList<Single<MetaCurrency>> meta = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
-            Date result = calendar.getTime();
-            dates.add(dateFormatNarr.format(result));
-            meta.add(fixerAPI.statistics(dateFormatWide.format(result), base));
-            calendar.add(Calendar.DATE, -1);
+        for (int i = 0; i < daysSequence.getRetrofitDates().size(); i++) {
+            meta.add(fixerAPI.statistics(daysSequence.getRetrofitDates().get(i), base));
         }
-        Collections.reverse(dates);
         return meta;
     }
-
-    float adaptFunction(int y, MetaCurrency m){
-        switch (y){
+    float adaptFunction(int x, MetaCurrency m){
+        switch (x){
             case 0:
                 return m.getRates().getEUR();
             case 1:
