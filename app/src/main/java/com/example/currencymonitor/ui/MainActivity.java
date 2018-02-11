@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,6 +50,7 @@ import static com.example.currencymonitor.data.db.CurrencyContract.Entry.CURRENC
 import static com.example.currencymonitor.data.db.CurrencyContract.Entry.TABLE_NAME;
 
 import com.example.currencymonitor.data.CurrencyData;
+import com.example.currencymonitor.utils.TextWatcherWrapper;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -120,15 +120,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         entryfield = findViewById(R.id.entryfield);
         entryfield.setRawInputType(Configuration.KEYBOARD_12KEY);
-        entryfield.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
+        entryfield.addTextChangedListener(new TextWatcherWrapper() {
             @Override
             public void afterTextChanged(Editable s) {
                 float coef;
@@ -178,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) { //todo wtf with lifecycle?
         if (key.equals(getString(R.string.pref_show_eur))) {
             hideEU = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_eur));
             dataList.remove(1);
