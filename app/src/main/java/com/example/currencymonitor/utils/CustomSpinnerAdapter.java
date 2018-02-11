@@ -18,13 +18,13 @@ import java.util.List;
  */
 
 public class CustomSpinnerAdapter extends ArrayAdapter<Flags> {
-    private Context mContext;
+    private Context context;
     List<Flags> flags;
 
     public CustomSpinnerAdapter(Context context, int textViewResourceId,
                                 List<Flags> flags) {
         super(context, textViewResourceId, flags);
-        mContext = context;
+        this.context = context;
         this.flags = flags;
     }
 
@@ -41,7 +41,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<Flags> {
 
     public View getCustomView(int position, View convertView,
                               ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(R.layout.row, parent, false);
         TextView label = (TextView) row.findViewById(R.id.currencyspinner);
         label.setText(flags.get(position).toString());

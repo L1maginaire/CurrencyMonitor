@@ -26,12 +26,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.currencymonitor.R;
-import com.example.currencymonitor.data.FixerAPI;
+import com.example.currencymonitor.di.components.DaggerCurrencyComponent;
+import com.example.currencymonitor.interfaces.FixerAPI;
 import com.example.currencymonitor.data.Rates;
 import com.example.currencymonitor.data.db.CurrencyDBHelper;
 import com.example.currencymonitor.data.Flags;
 import com.example.currencymonitor.di.components.CurrencyComponent;
-import com.example.currencymonitor.di.components.DaggerCurrencyComponent;
 import com.example.currencymonitor.di.modules.ContextModule;
 import com.example.currencymonitor.utils.Adapter;
 
@@ -62,36 +62,39 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private final static String KEY_INDEX = "index";
     private static final DecimalFormat df = new DecimalFormat("#.####");
 
-    private SQLiteDatabase mDb;
+    private SQLiteDatabase database;
     private CurrencyDBHelper dbHelper;
     private TextView last_update;
-    private Adapter mAdapter;
+    private Adapter adapter;
     private RecyclerView recyclerView;
     private EditText entryfield;
-    private ArrayList<CurrencyData> list;
+    private ArrayList<CurrencyData> dataList;
     private FixerAPI fixerAPI;
-    private GregorianCalendar mLastUpdateTime;
-    private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+    private GregorianCalendar lastUpdateTime;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+    private boolean hideEU = true;
+    private boolean hideUS = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);//todo: where?
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        list = new ArrayList<>();
+        dataList = new ArrayList<>();
 
 //        if (savedInstanceState != null) {
-//            list = (ArrayList<CurrencyData>) savedInstanceState.getSerializable(KEY_INDEX);
+//            dataList = (ArrayList<CurrencyData>) savedInstanceState.getSerializable(KEY_INDEX);
 //        }
 
         setContentView(R.layout.activity_main);
         last_update = findViewById(R.id.last_update_date);
 
         dbHelper = new CurrencyDBHelper(MainActivity.this);
-        mDb = dbHelper.getWritableDatabase();
+        database = dbHelper.getWritableDatabase();
 
-        if (dbExists(mDb))
-            mDb.delete(TABLE_NAME, null, null);
+        if (dbExists(database))
+            database.delete(TABLE_NAME, null, null);
         if (!isOnline()) {
             Toast.makeText(this, "Please, check your Internet connection.", Toast.LENGTH_LONG).show(); //todo: broadcast
             this.finish(); //todo: broadcastreciever, RX
@@ -111,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 //        abc.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                mAdapter.notifyDataSetChanged();
+//                adapter.notifyDataSetChanged();
 //            }
 //        });
 
@@ -119,10 +122,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         entryfield.setRawInputType(Configuration.KEYBOARD_12KEY);
         entryfield.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -132,25 +137,26 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 } catch (NumberFormatException e) {
                     coef = 0f;
                 }
-                for (CurrencyData c : list) {
+                for (CurrencyData c : dataList) {
                     c.setValue(Float.valueOf(df.format(c.getPrimaryRate() * coef)));
                 }
-                if (mAdapter != null)
-                    mAdapter.notifyDataSetChanged();
+                if (adapter != null)
+                    adapter.notifyDataSetChanged();
             }
         });
         setupSharedPreferences();
+        setupAdapter();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(KEY_INDEX, list);
+        outState.putSerializable(KEY_INDEX, dataList);
     }
 
     private void setupAdapter() {
-        mAdapter = new Adapter(this, list);
-        recyclerView.setAdapter(mAdapter);
+        adapter = new Adapter(this, dataList);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -174,21 +180,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_show_eur))) {
+            hideEU = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_eur));
+            dataList.remove(1);
 //            mVisualizerView.setShowBass(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_eur)));
         } else if (key.equals(getString(R.string.pref_show_usd))) {
-//            mVisualizerView.setShowMid(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_usd)));
+            dataList.remove(2);
         } else if (key.equals(getString(R.string.pref_show_jpy))) {
-//            mVisualizerView.setShowTreble(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_jpy)));
         } else if (key.equals(getString(R.string.pref_show_gbp))) {
-//            mVisualizerView.setShowTreble(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_gbp)));
         } else if (key.equals(getString(R.string.pref_show_chf))) {
-//            mVisualizerView.setShowTreble(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_chf)));
         } else if (key.equals(getString(R.string.pref_show_aud))) {
-//            mVisualizerView.setShowTreble(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_aud)));
         } else if (key.equals(getString(R.string.pref_show_cad))) {
-//            mVisualizerView.setShowTreble(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_cad)));
         } else if (key.equals(getString(R.string.pref_show_sek))) {
-//            mVisualizerView.setShowTreble(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_sek)));
         }
     }
 
@@ -200,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     private void bindData() {
-        Cursor cursor = mDb.query(TABLE_NAME, null, null, null, null, null, null);
+        Cursor cursor = database.query(TABLE_NAME, null, null, null, null, null, null);
         if (cursor == null || !cursor.moveToFirst()) {
             return;
         } else {
@@ -212,9 +214,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     continue;
                 data.setPrimaryRate(var);
                 data.setValue(var);
-                data.setPic(flags[i-1].getValue());
-                data.setTag(flags[i-1].toString());
-                list.add(data);
+                data.setPic(flags[i - 1].getValue());
+                data.setTag(flags[i - 1].toString());
+                dataList.add(data);
             }
         }
         return;
@@ -239,14 +241,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     private void requestRX(final String currecy) {
-        mCompositeDisposable.add(fixerAPI.getData(currecy)
+        compositeDisposable.add(fixerAPI.getData(currecy)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .map(data -> data.getRates())
                         .subscribe(rates -> {
                             dBinsert(rates, currecy);
                             last_update.setText("Last update: " + android.text.format.DateFormat.format("dd-yyyy-MM hh:mm",
-                                    mLastUpdateTime));
+                                    lastUpdateTime));
 //                        setupSharedPreferences();
                             bindData();
                             setupAdapter();
@@ -265,8 +267,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         cv.put(COLUMN_AUD, rates.getAUD());
         cv.put(COLUMN_CAD, rates.getCAD());
         cv.put(COLUMN_SEK, rates.getSEK());
-        long l = mDb.insert(TABLE_NAME, null, cv);
-        mLastUpdateTime = new GregorianCalendar();
+        long l = database.insert(TABLE_NAME, null, cv);
+        lastUpdateTime = new GregorianCalendar();
         Log.d(TAG, "dBinsert: " + String.valueOf(l));
     }
 
@@ -279,8 +281,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 //                getResources().getBoolean(R.bool.pref_show_mid_range_default)));
 //        mVisualizerView.setShowTreble(sharedPreferences.getBoolean(getString(R.string.pref_show_treble_key),
 //                getResources().getBoolean(R.bool.pref_show_treble_default)));
-//        mVisualizerView.setMinSizeScale(1);
-//        loadColorFromPreferences(sharedPreferences);
         // Register the listener
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }

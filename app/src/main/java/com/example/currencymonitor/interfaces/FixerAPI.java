@@ -1,7 +1,9 @@
-package com.example.currencymonitor.data;
+package com.example.currencymonitor.interfaces;
 
 // Fixer API:
 // http://fixer.io
+
+import com.example.currencymonitor.data.MetaCurrency;
 
 import io.reactivex.Single;
 import retrofit2.http.GET;

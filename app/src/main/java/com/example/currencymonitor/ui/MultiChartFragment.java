@@ -13,10 +13,10 @@ import android.widget.ArrayAdapter;
 import com.example.currencymonitor.data.MetaCurrency;
 import com.example.currencymonitor.data.Pair;
 import com.example.currencymonitor.R;
-import com.example.currencymonitor.data.FixerAPI;
+import com.example.currencymonitor.di.components.DaggerCurrencyComponent;
+import com.example.currencymonitor.interfaces.FixerAPI;
 import com.example.currencymonitor.data.Flags;
 import com.example.currencymonitor.di.components.CurrencyComponent;
-import com.example.currencymonitor.di.components.DaggerCurrencyComponent;
 import com.example.currencymonitor.di.modules.ContextModule;
 import com.example.currencymonitor.utils.CustomSpinnerAdapter;
 import com.example.currencymonitor.utils.DaysSequence;
@@ -52,9 +52,9 @@ import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
 public class MultiChartFragment extends Fragment {
     private ArrayList<Float> floats;
-    private CompositeDisposable mCompositeDisposable;
+    private CompositeDisposable compositeDisposable;
     private List<Flags> currencies = Arrays.asList(Flags.values());
-    private BarChart mChart;
+    private BarChart barChart;
     private FixerAPI fixerAPI;
     private DaysSequence daysSequence = new DaysSequence();
 
@@ -65,25 +65,25 @@ public class MultiChartFragment extends Fragment {
         View v = inflater.inflate(R.layout.chart, container, false);
  //       setRetainInstance(true); // to prevent hiding on changing orientation
 
-        mChart = (BarChart) v.findViewById(R.id.chartView);
-        mChart.getDescription().setEnabled(false);
+        barChart = (BarChart) v.findViewById(R.id.chartView);
+        barChart.getDescription().setEnabled(false);
 
         MyMarkerView mv = new MyMarkerView(getContext(), R.layout.marker_view);
-        mv.setChartView(mChart);
-        mChart.setMarker(mv);
+        mv.setChartView(barChart);
+        barChart.setMarker(mv);
 
-        mChart.setDrawGridBackground(false);
-        mChart.setDrawBarShadow(false);
+        barChart.setDrawGridBackground(false);
+        barChart.setDrawBarShadow(false);
 
-        Legend legend = mChart.getLegend();
+        Legend legend = barChart.getLegend();
         legend.setEnabled(false);
 
-        YAxis leftAxis = mChart.getAxisLeft();
+        YAxis leftAxis = barChart.getAxisLeft();
         leftAxis.setTextColor(getResources().getColor(R.color.textbright));
-        YAxis rightAxis = mChart.getAxisRight();
+        YAxis rightAxis = barChart.getAxisRight();
         rightAxis.setEnabled(false);
 
-        XAxis xAxis = mChart.getXAxis();
+        XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
         xAxis.setTextColor(getResources().getColor(R.color.textbright));
@@ -142,16 +142,16 @@ public class MultiChartFragment extends Fragment {
 
     private void requestStatistics(final int from, final int where) {
         if (from == where){
-            mChart.setData(null);
-            mChart.invalidate();
+            barChart.setData(null);
+            barChart.invalidate();
             return;
         }
         String base = currencies.get(from).toString();
         ArrayList<Single<MetaCurrency>> dataList = daysSequence(base);
         ArrayList <MetaCurrency> emptyList = new ArrayList<>();
         Single<List<MetaCurrency>> n = Single.merge(dataList).buffer(Integer.MAX_VALUE).single(emptyList); // todo: single?
-        mCompositeDisposable = new CompositeDisposable();
-        mCompositeDisposable.add(n
+        compositeDisposable = new CompositeDisposable();
+        compositeDisposable.add(n
                 .subscribeOn(Schedulers.io())
 //                .filter(new Predicate<List<MetaCurrency>>() {
 //                    @Override
@@ -165,9 +165,9 @@ public class MultiChartFragment extends Fragment {
                     for (MetaCurrency m:list) {
                         floats.add(adaptFunction(where, m));
                     }
-                    mChart.setData(generateData(floats));
-                    mChart.notifyDataSetChanged();
-                    mChart.invalidate();
+                    barChart.setData(generateData(floats));
+                    barChart.notifyDataSetChanged();
+                    barChart.invalidate();
                 })
         );
     }

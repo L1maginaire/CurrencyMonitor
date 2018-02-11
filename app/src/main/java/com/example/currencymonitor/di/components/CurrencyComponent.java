@@ -7,7 +7,7 @@ package com.example.currencymonitor.di.components;
 import com.example.currencymonitor.di.modules.CurrencyModule;
 import com.example.currencymonitor.interfaces.ApplicationScope;
 import dagger.Component;
-import com.example.currencymonitor.data.FixerAPI;
+import com.example.currencymonitor.interfaces.FixerAPI;
 
 @ApplicationScope
 @Component(modules = {CurrencyModule.class})

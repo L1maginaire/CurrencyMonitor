@@ -18,17 +18,17 @@ import java.util.ArrayList;
  */
 
 public class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
-    private Context mContext;
-    ArrayList<CurrencyData> list;
+    private Context context;
+    private ArrayList<CurrencyData> dataList;
 
-    public Adapter(Context context, ArrayList<CurrencyData> list) {
-        mContext = context;
-        this.list = list;
+    public Adapter(Context context, ArrayList<CurrencyData> dataList) {
+        this.context = context;
+        this.dataList = dataList;
     }
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
+        LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.recyclers_single_item, parent, false);
         return new Holder(view);
     }
@@ -36,11 +36,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
 
     @Override
     public void onBindViewHolder(Holder holder, final int position) {
-        if (list == null || list.size() == 0)
+        if (dataList == null || dataList.size() == 0)
             return;
-        float val = (float) list.get(position).getValue();
-        int res = (int) list.get(position).getPic();
-        String tag = (String) list.get(position).getTag();
+        float val = (float) dataList.get(position).getValue();
+        int res = (int) dataList.get(position).getPic();
+        String tag = (String) dataList.get(position).getTag();
         holder.textView.setText(String.valueOf(val));
         holder.mImageView.setImageResource(res);
         holder.mImageView.setTag(tag);
@@ -48,7 +48,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return dataList.size();
     }
 
     class Holder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -64,9 +64,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
 
         @Override
         public void onClick(View v) {
-//            Intent intent = ChartActivity.newIntent(mContext, (String) mImageView.getTag());
-//            mContext.startActivity(intent);
-//            mContext.startActivity(ChartActivity.newIntent(mContext, mImageView.getId()));
+//            Intent intent = ChartActivity.newIntent(context, (String) mImageView.getTag());
+//            context.startActivity(intent);
+//            context.startActivity(ChartActivity.newIntent(context, mImageView.getId()));
         }
     }
 }

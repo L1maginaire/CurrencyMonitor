@@ -36,15 +36,7 @@ public class DaysSequence {
         return tableDates;
     }
 
-    public void setTableDates(ArrayList<String> tableDates) {
-        this.tableDates = tableDates;
-    }
-
     public ArrayList<String> getRetrofitDates() {
         return retrofitDates;
-    }
-
-    public void setRetrofitDates(ArrayList<String> retrofitDates) {
-        this.retrofitDates = retrofitDates;
     }
 }
