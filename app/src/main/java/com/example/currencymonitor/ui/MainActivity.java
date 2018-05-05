@@ -80,7 +80,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);//todo: where?
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().hide();
+//        getSupportActionBar().setDisplayShowTitleEnabled(false);
         dataList = new ArrayList<>();
 
 //        if (savedInstanceState != null) {
